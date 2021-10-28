@@ -8,6 +8,7 @@ module.exports = {
   name: "clop",
   alias: ["boorunsfw","explicit"],
   admin: false,
+  nsfw: true,
   run: async (client, message, command, args, prefix, color, langv) => {
 
     // Return if client can't react
