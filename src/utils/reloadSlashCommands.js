@@ -31,8 +31,19 @@ async function isEnabled(command, guildID) {
   const guilds = dbo.collection("guilds");
   const guild = await guilds.findOne({id: guildID});
 	if (guild==null) {db.close(); return true;}
-  const modules = guild.modules;
+  var modules = guild.modules;
   if (modules==null) {db.close(); return true;}
+
+  const fixedModules = modules.filter(m => {
+    return m !== null;
+  });
+
+  if (fixedModules.length != modules.length) {
+    console.log(`Broken modules found on guild with ID ${guildID}`);
+    modules = fixedModules;
+    await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
+  }
+
 	const cmdModule = modules.find((c) => c.name == command);
 	if (cmdModule==null) {db.close(); return true;}
 	db.close();
