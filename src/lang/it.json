@@ -120,6 +120,17 @@
       ]
     },
     {
+      "name": "e621",
+      "description": "Sends an image from e621.",
+      "options": [
+        {
+          "name": "tags",
+          "type": "STRING",
+          "description": "Tags to search (separated by spaces)."
+        }
+      ]
+    },
+    {
       "name": "mlp",
       "description": "Torrent episodi MLP"
     }
@@ -136,6 +147,7 @@
       "hug": ["hug {utente}", "Abbraccia un'utente."],
       "booru": ["booru {ricerca (opzionale)}", "Invia un'immagine SFW da Manebooru. Puoi usare termini di ricerca."],
       "clop": ["clop {ricerca (opzionale)}", "Invia un'immagine NSFW da Manebooru. Puoi usare termini di ricerca. Solo può essere usato in un canale NSFW.","NSFW"],
+      "e621": ["e621 {ricerca (opzionale)}", "Invia un'immagine da e621. Puoi usare termini di ricerca. Solo può essere usato in un canale NSFW.","NSFW"],
       "mlp": ["mlp", "Torrent episodi MLP"]
     },
     "admin": [

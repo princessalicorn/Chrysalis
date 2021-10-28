@@ -71,7 +71,7 @@
       "filter": 200
     },
     {
-      "name": "reddit",
+      "name": "e621",
       "enabled": true,
       "restricted": false,
       "allowedChannels": []

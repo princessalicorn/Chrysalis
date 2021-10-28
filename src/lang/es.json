@@ -120,6 +120,17 @@
       ]
     },
     {
+      "name": "e621",
+      "description": "Envía una imagen de e621.",
+      "options": [
+        {
+          "name": "tags",
+          "type": "STRING",
+          "description": "Tags para buscar (separados por espacios)."
+        }
+      ]
+    },
+    {
       "name": "mlp",
       "description": "¡Descarga episodios de MLP por torrent!"
     }
@@ -136,6 +147,7 @@
       "hug": ["hug {usuario}", "Abraza a un usuario."],
       "booru": ["booru {búsqueda (opcional)}", "Envía una imagen de Manebooru. Puedes escribir tags para buscar."],
       "clop": ["clop {búsqueda (opcional)}", "Envía una imagen clop de Manebooru. Puedes escribir tags para buscar. Solo se puede usar en canales NSFW.","NSFW"],
+      "e621": ["e621 {búsqueda (opcional)}", "Envía una imagen de e621. Puedes escribir tags para buscar. Solo se puede usar en canales NSFW.","NSFW"],
       "mlp": ["mlp", "¡Descarga episodios de MLP por torrent!"]
     },
     "admin": [
