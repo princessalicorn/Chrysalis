@@ -317,6 +317,7 @@ async function runCommand(message) {
         message.author.send(lang.wrong_channel);
         if (!message.deleted && message.channel.permissionsFor(client.user.id).has('MANAGE_MESSAGES')) message.delete();
       } else {
+				if (cmd.nsfw == true && !message.channel.nsfw) return message.author.send(lang.nsfw_only);
         const color = await getColor(message.guild.id);
 				if (cmd.name!='clean') try {
 					await message.channel.sendTyping();
@@ -342,6 +343,7 @@ async function runSlashCommand(i) {
 		if (!cmd.admin) restricted = await isRestricted(command, i);
 		else if (!i.member.permissions.has('ADMINISTRATOR')) return;
 		if (restricted) i.user.send(lang.wrong_channel);
+		if (cmd.nsfw == true && !i.channel.nsfw) return i.member.user.send(lang.nsfw_only);
 		else {
 			const color = await getColor(i.guild.id);
 			await i.deferReply();
