@@ -95,8 +95,15 @@ module.exports = {
 
     // Send the image
     const attachment = new MessageAttachment(canvas.toBuffer(), 'welcome.png');
-    if (message.author) message.channel.send({files: [attachment]});
-    else message.editReply({files: [attachment]});
+    const channel = message.channel;
+		if (!channel.permissionsFor(client.user.id).has('ATTACH_FILES')) return;
+		if (welcome.message == null) welcome.message = 'default';
+		if (welcome.message == 'off' || welcome.message.trim() == '' || welcome.message == 'none' || welcome.message == 'null' || welcome.message == 'false') {
+			channel.send({files: [attachment]});
+		} else {
+			if (welcome.message == 'default') welcome.message = lang.welcome_to_guild;
+			channel.send({content: welcome.message.replaceAll('{user}',message.member).replaceAll('{guild}',message.guild.name), files: [attachment]});
+		}
 
   }
 
