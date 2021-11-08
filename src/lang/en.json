@@ -44,6 +44,21 @@
       "description": "Shows info about the server."
     },
     {
+      "name": "rank",
+      "description": "Shows your current level and XP.",
+      "options": [
+        {
+          "name": "user",
+          "type": "USER",
+          "description": "The user to display the rank of."
+        }
+      ]
+    },
+    {
+      "name": "leaderboard",
+      "description": "Shows the users with the most XP."
+    },
+    {
       "name": "emoji",
       "description": "Sends the emoji as an image.",
       "options": [
@@ -141,6 +156,8 @@
       "userinfo": ["userinfo {user}", "Shows info about the user. You can mention them or use their ID."],
       "roleinfo": ["roleinfo {role}", "Shows info about the role. You can type the name of the role to search for it."],
       "serverinfo": ["serverinfo","Shows info about the server."],
+      "rank": ["rank {user (optional)}","Shows your current level and XP."],
+      "leaderboard": ["leaderboard","Shows the XP leaderboard."],
       "emoji": ["jumbo {emoji}", "Sends the emoji as an image."],
       "love": ["love {user 1} {user 2 (optional)}", "Checks the compatibility level between two users."],
       "boop": ["boop {user}", "Boops a user."],
@@ -165,7 +182,8 @@
       ["disable {module}", "Disables a module."],
       ["module {module}", "Edits a module."],
       ["rolemenu {roleID} {roleID} {roleID}...", "Creates a role menu. Every argument is a role ID."],
-      ["welcome {user}", "Shows a preview of the welcome card for the memtioned user."]
+      ["welcome {user}", "Shows a preview of the welcome card for the memtioned user."],
+      ["setxp {user} {xp}", "Sets the amount of XP that a user has."]
     ]
   },
   "wrong_channel": "The command you sent cannot be used in that channel.",
@@ -250,7 +268,7 @@
   "manage_roles_permission_required": "Chrysalis needs the `MANAGE_ROLES` permission to use this command.",
   "chrysalis_role_too_low": "Chrysalis' role is lower than the role you're requesting. Please, ask an admin to fix it.",
   "download_emoji": "Download emoji",
-  "please_type_a_valid_channel": "Please, type a valid channel.",
+  "please_type_a_valid_channel": "PCaucasianlease, type a valid channel.",
   "invalid_channel": "At least one of the channels you typed is invalid.",
   "invite_the_bot": "Invite the bot",
   "website": "Website",
@@ -274,5 +292,11 @@
   "torrent_footer": "The episodes are downloaded as torrents. Chrysalis recommends downloading them using qBitTorrent, due to it not containing ads. Links are provided by yayponies.no /)",
   "error_fetching_episodes": "There was an error fetching the episodes. Please, try again later.",
   "goodbye_user": "Goodbye, **{user}**. Hope we can see you again soon.",
-  "attach_files_permission_missing": "Chrysalis doesn't have permission to send images to this channel."
+  "attach_files_permission_missing": "Chrysalis doesn't have permission to send images to this channel.",
+  "please_type_a_valid_positive_integer": "Please type a valid positive integer.",
+  "module_property_not_found": "Module property not found.",
+  "levelup": "**Level up!**\nYou're level **{level}** now!",
+  "leaderboard_title": "Leaderboard",
+  "leaderboard_description": "",
+  "level": "Level"
 }

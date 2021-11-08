@@ -4,7 +4,7 @@ const dbURL = process.env.DB_URL;
 
 module.exports = {
   name: "help",
-  alias: ["commands"],
+  alias: ["commands","ayuda","cmds"],
   admin: false,
   run: async (client, message, command, args, prefix, color, lang) => {
 
@@ -25,18 +25,18 @@ module.exports = {
 
     helpEmbed = [];
     let i = 0;
+    const rankEnabled = modules.find((c) => c.name == 'rank')?.enabled;
     const defaultModules = require('../defaultModules.json').modules;
     for (moduleName of helpModules) {
-
       helpModule = modules.find((c) => c.name == moduleName);
-      if (helpModule == null) {
+      if (helpModule == null && moduleName != 'leaderboard') {
         moduleModel = defaultModules.find((c) => c.name == moduleName);
         modules.push(moduleModel);
         await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
         helpModule = modules.find((c) => c.name == moduleName);
       }
 
-      if (helpModule.enabled) {
+      if (helpModule?.enabled || (moduleName == 'leaderboard' && rankEnabled)) {
         if (helpEmbed[i]?.fields.length == 5) i++;
         if (helpEmbed[i] == null) helpEmbed[i] = new MessageEmbed()
           .setColor(color)

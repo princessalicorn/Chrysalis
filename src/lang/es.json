@@ -44,6 +44,21 @@
       "description": "Muestra información sobre el servidor."
     },
     {
+      "name": "rank",
+      "description": "Muestra tu nivel y experiencia actual.",
+      "options": [
+        {
+          "name": "usuario",
+          "type": "USER",
+          "description": "El usuario del que mostrar el nivel."
+        }
+      ]
+    },
+    {
+      "name": "leaderboard",
+      "description": "Muestra los usuarios con más experiencia."
+    },
+    {
       "name": "emoji",
       "description": "Envía el emoji como una imagen.",
       "options": [
@@ -141,6 +156,8 @@
       "userinfo": ["userinfo {usuario}", "Muestra información sobre el usuario. Puedes usar una mención o la ID del usuario."],
       "roleinfo": ["roleinfo {rol}", "Muestra información sobre el rol. Puedes escribir el nombre del rol para buscarlo."],
       "serverinfo": ["serverinfo","Muestra información sobre el servidor."],
+      "rank": ["rank {usuario (opcional)}","Muestra tu nivel y experiencia actual."],
+      "leaderboard": ["leaderboard","Muestra los usuarios con más experiencia."],
       "emoji": ["jumbo {emoji}", "Envía el emoji como una imagen."],
       "love": ["love {usuario 1} {usuario 2 (opcional)}", "Comprueba tu nivel de compatibilidad entre dos usuarios. Si solo escribes un usuario el otro serás tú."],
       "boop": ["boop {usuario}", "Hace boop a un usuario."],
@@ -165,7 +182,8 @@
       ["disable {módulo}", "Desactiva un módulo."],
       ["module {módulo}", "Edita un módulo."],
       ["rolemenu {roleID} {roleID} {roleID}...", "Crea un menú de roles. Cada argumento es la ID de un rol."],
-      ["welcome {usuario}", "Muestra cómo se vería la tarjeta de bienvenida del usuario mencionado."]
+      ["welcome {usuario}", "Muestra cómo se vería la tarjeta de bienvenida del usuario mencionado."],
+      ["setxp {usuario} {xp}", "Establece la cantidad de experiencia que tiene un usuario."]
     ]
   },
   "wrong_channel": "El comando que has enviado no se puede usar en ese canal.",
@@ -274,5 +292,11 @@
   "torrent_footer": "Los episodios se descargan en torrent. Chrysalis recomienda usar qBitTorrent para descargarlos, ya que este cliente no tiene anuncios. Los enlaces son proporcionados por yayponies.no /)",
   "error_fetching_episodes": "No se han podido obtener los episodios en este momento. Por favor, inténtalo más tarde.",
   "goodbye_user": "Adiós, **{user}**. Esperamos volver a verte pronto.",
-  "attach_files_permission_missing": "Chrysalis no tiene permiso para enviar imágenes a este canal."
+  "attach_files_permission_missing": "Chrysalis no tiene permiso para enviar imágenes a este canal.",
+  "please_type_a_valid_positive_integer": "Por favor, escribe un número entero positivo.",
+  "module_property_not_found": "Propiedad del módulo no encontrada.",
+  "levelup": "**¡Has subido de nivel!**\nAhora eres nivel **{level}**.",
+  "leaderboard_title": "Tabla de clasificación",
+  "leaderboard_description": "",
+  "level": "Nivel"
 }

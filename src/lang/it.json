@@ -44,6 +44,21 @@
       "description": "Mostra informazioni sul server."
     },
     {
+      "name": "rank",
+      "description": "Shows your current level and XP.",
+      "options": [
+        {
+          "name": "user",
+          "type": "USER",
+          "description": "The user to display the rank of."
+        }
+      ]
+    },
+    {
+      "name": "leaderboard",
+      "description": "Shows the users with the most XP."
+    },
+    {
       "name": "emoji",
       "description": "Invia l'emoji come un'immagine.",
       "options": [
@@ -141,6 +156,8 @@
       "userinfo": ["userinfo {utente}", "Mostra informazioni account dell'utente menzionato. Puoi usare l'ID dell'utente."],
       "roleinfo": ["roleinfo {ruolo}", "Mostra informazioni sul ruolo. Puoi digitare il nome dell'ruolo per cercarlo."],
       "serverinfo": ["serverinfo","Mostra informazioni sul server."],
+      "rank": ["rank {utente (opzionale)}","Shows your current level and XP."],
+      "leaderboard": ["leaderboard","Shows the XP leaderboard."],
       "emoji": ["jumbo {emoji}", "Invia l'emoji come un'immagine."],
       "love": ["love {utente 1} {utente 2 (opzionale)}", "Verifica la compatibilità tra due utenti."],
       "boop": ["boop {utente}", "Boop un'utente."],
@@ -165,7 +182,8 @@
       ["disable {module}", "Disabilita un modulo."],
       ["module {modulo}", "Modifica un modulo."],
       ["rolemenu {ruoloID} {ruoloID} {ruoloID}...", "Crea un rolemenu. Ogni argomenti è un'ID di un ruolo."],
-      ["welcome {utene}", "Mostra un'anteprima della carta di benvenuto per l'utente menzionato."]
+      ["welcome {utene}", "Mostra un'anteprima della carta di benvenuto per l'utente menzionato."],
+      ["setxp {user} {xp}", "Sets the amount of XP that a user has."]
     ]
   },
   "wrong_channel": "Il comando che hai inviato non può essere usato in questo canale",
@@ -274,5 +292,8 @@
   "torrent_footer": "I episodi son scaricato come i torrent. Chrysalis consiglia di scaricarli con qBitTorrent. I link sono forniti da yayponies.no /)",
   "error_fetching_episodes": "C'era un errore durante il recupero dei link. Per favore riprova più tardi.",
   "goodbye_user": "Arrivederci, **{user}**. Spero ci vediamo presto.",
-  "attach_files_permission_missing": "Chrysalis non ha permissi da inviare gli immagini in questo cannale."
+  "attach_files_permission_missing": "Chrysalis non ha permissi da inviare gli immagini in questo cannale.",
+  "please_type_a_valid_positive_integer": "Please type a valid positive integer.",
+  "module_property_not_found": "Module property not found.",
+  "levelup": "**Level up!**\nYou're level **{level}** now!"
 }

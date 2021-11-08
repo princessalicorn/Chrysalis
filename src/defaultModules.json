@@ -112,6 +112,20 @@
       "enabled": true,
       "restricted": false,
       "allowedChannels": []
+    },
+    {
+      "name": "rank",
+      "enabled": false,
+      "restricted": false,
+      "allowedChannels": [],
+      "xpBlacklistChannels": [],
+      "xpPerMessage": 2,
+      "messageCooldown": 8,
+      "xpInVoiceChat": 3,
+      "voiceChatCooldown": 60,
+      "announceLevelUp": true,
+      "announceLevelUpChannel": "",
+      "users": []
     }
   ]
 }

@@ -4,8 +4,9 @@ const dbURL = process.env.DB_URL;
 module.exports = async (client, guild, lang) => {
   const applicationCommands = [];
   for (command of client.commands) {
+    if (command[0] == 'leaderboard') continue;
     if (command[1].admin || await isEnabled(command[0], guild.id) == false) continue;
-    const cmdtxt = lang.commands.find((c) => c.name == command[0]);
+    let cmdtxt = lang.commands.find((c) => c.name == command[0]);
     if (!cmdtxt) continue;
     applicationCommands.push({
       name: command[0],
@@ -13,10 +14,19 @@ module.exports = async (client, guild, lang) => {
       options: cmdtxt.options || []
     });
   }
+  if (await isEnabled('rank', guild.id)) {
+    let cmdtxt = lang.commands.find((c) => c.name == 'leaderboard');
+    applicationCommands.push({
+      name: 'leaderboard',
+      description: cmdtxt.description,
+      options: []
+    });
+  }
   try {
     await guild.commands.set(applicationCommands);
     console.log(`Successfully loaded slash commands on ${guild.name}`)
   } catch (e) {
+    console.log(e)
     console.log(`Can't load slash commands on ${guild.name}`)
   }
 }

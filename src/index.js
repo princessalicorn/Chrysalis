@@ -1,5 +1,5 @@
 const { Client, Intents, Collection, MessageEmbed, MessageButton, MessageActionRow, MessageAttachment } = require('discord.js');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.DIRECT_MESSAGES] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.DIRECT_MESSAGES] });
 const colors = require('colors');
 require('dotenv').config();
 const path = require('path');
@@ -7,11 +7,14 @@ var fs = require('fs');
 var MongoClient = require('mongodb').MongoClient;
 const dbURL = process.env.DB_URL;
 const reloadSlashCommands = require('./utils/reloadSlashCommands.js');
+const announceLevelUp = require('./utils/announceLevelUp.js');
 const Canvas = require('canvas');
 const { fillTextWithTwemoji } = require('node-canvas-with-twemoji-and-discord-emoji');
 const defaultColor = "#245128";
 const defaultModules = require('./defaultModules.json').modules;
 const presence = require('./presence.json');
+const onCooldown = new Set();
+const onVoiceChat = new Set();
 
 // Fetch servers and set Rich Presence
 client.on('ready', async () => {
@@ -127,7 +130,7 @@ client.on('guildMemberAdd', async (member) => {
 
 	// Send the image
 	const attachment = new MessageAttachment(canvas.toBuffer(), 'welcome.png');
-	const channel = client.channels.cache.find(channel => channel.id == welcome.channel)
+	const channel = client.channels.cache.find(channel => channel.id == welcome.channel);
 	if (channel != null) {
 		if (!channel.permissionsFor(client.user.id).has('SEND_MESSAGES')) return;
 		if (!channel.permissionsFor(client.user.id).has('ATTACH_FILES')) return;
@@ -177,6 +180,17 @@ client.on('guildMemberRemove', async (member) => {
 client.on('guildMemberUpdate', (oldMember, newMember) => {
   if (oldMember.premiumSinceTimestamp == 0 && newMember.premiumSinceTimestamp!=0)
 	boostEmbed(newMember);
+});
+
+client.on('voiceStateUpdate', (oldState, newState) => {
+	if ((newState.channel?.id != null && oldState.channel?.id == null) || (newState.channel?.guild?.id != null && oldState.channel?.guild?.id != newState.channel?.guild?.id)) {
+		// User joins a voice channel (not switch)
+		onVoiceChat.add(`${newState.member.user.id},${newState.guild.id};${new Date()}`);
+	}
+	if ((oldState.channel?.id != null && newState.channel?.id == null) || (oldState.channel?.guild?.id != null && oldState.channel?.guild?.id != newState.channel?.guild?.id)) {
+		// User leaves a voice channel
+		addVoiceXP(oldState);
+	}
 });
 
 client.on('interactionCreate', async (i) => {
@@ -261,6 +275,9 @@ async function getColor(guildID) {
 }
 
 async function isRestricted(command, message) {
+
+	if (command == 'leaderboard') return isRestricted('rank', message);
+
   const guildID = message.guild.id
   const channelID = message.channel.id
   const db = new MongoClient(dbURL, {
@@ -304,10 +321,12 @@ async function runCommand(message) {
 
   const prefix = await getPrefix(message.guild.id);
   const lang = require(`./lang/${await getLang(message.guild.id)}.json`);
+	const args = message.content.slice(prefix.length).split(/ +/);
+	const command = args.shift().toLowerCase();
+	const noxp = ['rank','leaderboard','lb','highscores','top','leaderboards','setxp'];
+	if (noxp.indexOf(command) == -1) await addMessageXP(message);
 
   if (message.content.startsWith(prefix)) {
-    const args = message.content.slice(prefix.length).split(/ +/);
-    const command = args.shift().toLowerCase();
     let cmd = client.commands.get(command) || client.commands.find((c) => c.alias.includes(command));
     if (cmd) {
       var restricted = false;
@@ -435,9 +454,9 @@ async function sendHelp(message) {
   const lang = require(`./lang/${langstr}.json`);
 
 	const embed = new MessageEmbed()
-		.setTitle('Chrysalis')
+		.setTitle(client.user.username)
 		.setThumbnail(client.user.displayAvatarURL())
-		.setDescription(`[${lang.invite_the_bot}](https://discord.com/api/oauth2/authorize?client_id=797161820594634762&permissions=8&scope=bot%20applications.commands) | [${lang.website}](https://programmerpony.gitlab.io/Chrysalis/) | [${lang.support_server}](https://discord.gg/Vj2jYQKaJP)`)
+		.setDescription(`[${lang.invite_the_bot}](https://discord.com/api/oauth2/authorize?client_id=797161820594634762&permissions=8&scope=bot%20applications.commands) | [${lang.website}](https://chrysalis.programmerpony.com) | [${lang.support_server}](https://discord.gg/Vj2jYQKaJP)`)
 		.setColor(await getColor(message.guild.id))
 		.addField('💻 GitLab','[Source Code](https://gitlab.com/programmerpony/Chrysalis)',true)
 		.addField(`💞 ${lang.support_the_project}`,'[Buy me a Coffe](https://ko-fi.com/programmerpony)',true)
@@ -664,4 +683,126 @@ async function sendEditedMessage(oldMessage, newMessage) {
 		}
 	}
 
+}
+
+async function addMessageXP(message) {
+
+	if (onCooldown.has(`${message.author.id},${message.guild.id}`)) return;
+
+	const guildID = message.guild.id;
+
+	if (guildID == null || guildID == '') return;
+
+  const db = new MongoClient(dbURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  await db.connect();
+  const dbo = db.db("chrysalis");
+  const guilds = dbo.collection("guilds");
+  const guild = await guilds.findOne({id: guildID});
+	if (guild == null) return db.close();
+	const modules = guild.modules;
+  if (modules==null) return db.close();
+	let rank = modules.find((c) => c.name == 'rank');
+	if (rank == null) {
+		const defaultModules = require('./defaultModules.json').modules;
+		moduleModel = defaultModules.find((m) => m.name == 'rank');
+		modules.push(moduleModel);
+		rank = modules.find((c) => c.name == 'rank');
+	}
+	if (!rank.enabled) return db.close();
+	if (rank.xpBlacklistChannels.indexOf(message.channel.id) != -1) return db.close();
+	let user = rank.users.find(u => u.id == message.author.id);
+	if (user == null) {
+		rank.users.push({id: message.author.id, xp: 0});
+		user = rank.users.find(u => u.id == message.author.id);
+	}
+	if (user.xp >= Number.MAX_SAFE_INTEGER) return db.close();
+
+	let currentLevel = Math.trunc((Math.sqrt(5)/5)*Math.sqrt(user.xp));
+
+	user.xp+=rank.xpPerMessage;
+
+	let newLevel = Math.trunc((Math.sqrt(5)/5)*Math.sqrt(user.xp));
+
+	if ((currentLevel < newLevel) && rank.announceLevelUp)
+	announceLevelUp(
+		client,
+		message.author,
+		newLevel,
+		rank.announceLevelUpChannel,
+		await getColor(message.guild.id),
+		require(`./lang/${await getLang(message.guild.id)}.json`)
+	);
+
+	if (!isNaN(parseInt(user.xp))) await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
+	db.close();
+	if (rank.messageCooldown > 0) {
+		onCooldown.add(`${message.author.id},${message.guild.id}`);
+		setTimeout(() => {
+			onCooldown.delete(`${message.author.id},${message.guild.id}`);
+  	}, rank.messageCooldown*1000);
+	}
+}
+
+async function addVoiceXP(state) {
+
+	const guildID = state.guild.id;
+
+	if (guildID == null || guildID == '') return;
+
+  const db = new MongoClient(dbURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  await db.connect();
+  const dbo = db.db("chrysalis");
+  const guilds = dbo.collection("guilds");
+  const guild = await guilds.findOne({id: guildID});
+	if (guild == null) return db.close();
+	const modules = guild.modules;
+  if (modules==null) return db.close();
+	let rank = modules.find((c) => c.name == 'rank');
+	if (rank == null) {
+		const defaultModules = require('./defaultModules.json').modules;
+		moduleModel = defaultModules.find((m) => m.name == 'rank');
+		modules.push(moduleModel);
+		rank = modules.find((c) => c.name == 'rank');
+	}
+	if (!rank.enabled) return db.close();
+	if (rank.xpBlacklistChannels.indexOf(state.channel.id) != -1) return db.close();
+	let user = rank.users.find(u => u.id == state.member.user.id);
+	if (user == null) {
+		rank.users.push({id: state.member.user.id, xp: 0});
+		user = rank.users.find(u => u.id == state.member.user.id);
+	}
+	if (user.xp >= Number.MAX_SAFE_INTEGER) return db.close();
+
+	let currentLevel = Math.trunc((Math.sqrt(5)/5)*Math.sqrt(user.xp));
+
+	for (val of onVoiceChat) {
+		if (val.startsWith(`${state.member.user.id},${state.guild.id};`)) {
+			onVoiceChat.delete(val)
+			let timestamp = new Date(val.substring(val.indexOf(';')+1,val.length));
+			let secondsInVoiceChat = Math.trunc(Math.abs(new Date() - timestamp)/1000);
+
+			if (secondsInVoiceChat >= rank.voiceChatCooldown) user.xp+=Math.trunc(secondsInVoiceChat/rank.voiceChatCooldown)*rank.xpInVoiceChat;
+
+			let newLevel = Math.trunc((Math.sqrt(5)/5)*Math.sqrt(user.xp));
+
+			if ((currentLevel < newLevel) && rank.announceLevelUp) {
+				announceLevelUp(
+					client,
+					state.member.user,
+					newLevel,
+					rank.announceLevelUpChannel,
+					await getColor(state.guild.id),
+					require(`./lang/${await getLang(state.guild.id)}.json`)
+				);
+			}
+			if (!isNaN(parseInt(user.xp))) await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
+		}
+	}
+	db.close();
 }
