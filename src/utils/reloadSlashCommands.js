@@ -26,7 +26,6 @@ module.exports = async (client, guild, lang) => {
     await guild.commands.set(applicationCommands);
     console.log(`Successfully loaded slash commands on ${guild.name}`)
   } catch (e) {
-    console.log(e)
     console.log(`Can't load slash commands on ${guild.name}`)
   }
 }
