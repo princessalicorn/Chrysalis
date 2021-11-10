@@ -21,7 +21,7 @@ client.on('ready', async () => {
 	console.log(colors.bgWhite.black(`Bot started as ${client.user.tag}`));
 	await registerSlashCommands();
 	client.user.setPresence(presence)
-	console.log(colors.bgWhite.black(`Ready!`));
+	console.log(colors.bgWhite.black(`${client.user.username} is ready on ${client.guilds.cache.size} server${client.guilds.cache.size != 1 ? 's' : ''}!`));
 });
 
 client.on('guildCreate', (guild) => {
