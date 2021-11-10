@@ -772,6 +772,7 @@ async function addVoiceXP(state) {
 	}
 	if (!rank.enabled) return db.close();
 	if (rank.xpBlacklistChannels.indexOf(state.channel.id) != -1) return db.close();
+	if (rank.voiceChatCooldown <= 0 || rank.xpInVoiceChat <= 0) return db.close();
 	let user = rank.users.find(u => u.id == state.member.user.id);
 	if (user == null) {
 		rank.users.push({id: state.member.user.id, xp: 0});
