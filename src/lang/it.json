@@ -45,18 +45,18 @@
     },
     {
       "name": "rank",
-      "description": "Shows your current level and XP.",
+      "description": "Mostra il tuo XP e livello nel tabellone.",
       "options": [
         {
           "name": "user",
           "type": "USER",
-          "description": "The user to display the rank of."
+          "description": "Il grado dell'utente da visualizzare."
         }
       ]
     },
     {
       "name": "leaderboard",
-      "description": "Shows the users with the most XP."
+      "description": "Mostra gli utenti con più XP."
     },
     {
       "name": "emoji",
@@ -293,7 +293,7 @@
   "error_fetching_episodes": "C'era un errore durante il recupero dei link. Per favore riprova più tardi.",
   "goodbye_user": "Arrivederci, **{user}**. Spero ci vediamo presto.",
   "attach_files_permission_missing": "Chrysalis non ha permissi da inviare gli immagini in questo cannale.",
-  "please_type_a_valid_positive_integer": "Please type a valid positive integer.",
-  "module_property_not_found": "Module property not found.",
-  "levelup": "**Level up!**\nYou're level **{level}** now!"
+  "please_type_a_valid_positive_integer": "Por favore, invia un numero intero positivo.",
+  "module_property_not_found": "Proprietà del modulo non trovata.",
+  "levelup": "**Sei salito di livello!**\nOra sei di livello **{level}**!"
 }
