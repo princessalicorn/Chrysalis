@@ -102,7 +102,7 @@ module.exports = {
 			channel.send({files: [attachment]});
 		} else {
 			if (welcome.message == 'default') welcome.message = lang.welcome_to_guild;
-			channel.send({content: welcome.message.replaceAll('{user}',message.member).replaceAll('{guild}',message.guild.name), files: [attachment]});
+			channel.send({content: welcome.message.replaceAll('{user}',user).replaceAll('{guild}',message.guild.name), files: [attachment]});
 		}
 
   }
