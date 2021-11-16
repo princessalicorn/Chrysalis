@@ -277,6 +277,15 @@ async function checkAction(message, requestedModule, action, color, args) {
                 return message.reply(lang.please_specify_a_new_value);
               }
             } else {
+              if (Array.isArray(moduleObj[key])) {
+                args.shift();
+                args.shift();
+                moduleObj[key] = args;
+                await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
+                db.close();
+                message.channel.send(lang.module_updated);
+                return sendHelp(message, requestedModule, color);
+              } else
               if (args.length > 2) {
                 moduleObj[key] = args[2];
                 switch (key) {
