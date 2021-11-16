@@ -1,8 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 const fetch = require("node-fetch");
 var lang;
-var MongoClient = require('mongodb').MongoClient;
-const dbURL = process.env.DB_URL;
 
 module.exports = {
   name: "e621",

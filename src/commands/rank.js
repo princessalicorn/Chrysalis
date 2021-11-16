@@ -1,7 +1,6 @@
-var MongoClient = require('mongodb').MongoClient;
-const dbURL = process.env.DB_URL;
 const canvacord = require('canvacord');
 const { MessageAttachment } = require('discord.js')
+const connectToDatabase = require('../utils/connectToDatabase.js');
 
 module.exports = {
   name: "rank",
@@ -22,13 +21,8 @@ module.exports = {
 
     try {
       taggedUserObject = await client.users.fetch(taggedUser); // Check if it's a valid user
-      const db = new MongoClient(dbURL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
-      await db.connect();
-      const dbo = db.db("chrysalis");
-      const guilds = dbo.collection("guilds");
+      const db = await connectToDatabase();
+      const guilds = db.db("chrysalis").collection("guilds");
       const guild = await guilds.findOne({id: guildID});
     	if (guild == null) return db.close();
     	const modules = guild.modules;

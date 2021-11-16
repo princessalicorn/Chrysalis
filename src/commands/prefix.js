@@ -1,6 +1,5 @@
 const { MessageEmbed } = require('discord.js');
-var MongoClient = require('mongodb').MongoClient;
-const dbURL = process.env.DB_URL;
+const connectToDatabase = require('../utils/connectToDatabase.js');
 
 module.exports = {
   name: "prefix",
@@ -41,13 +40,8 @@ module.exports = {
 
 async function changePrefix(message, newPrefix, lang) {
   const guildID = message.guild.id;
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+  const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
   if (guild==null) return db.close();
   if (guild.prefix == null) return db.close();

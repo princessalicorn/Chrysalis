@@ -1,8 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 var fs = require('fs');
 var lang;
-var MongoClient = require('mongodb').MongoClient;
-const dbURL = process.env.DB_URL;
+const connectToDatabase = require('../utils/connectToDatabase.js');
 
 module.exports = {
   name: "bannedwords", // Name of the DB module
@@ -38,13 +37,8 @@ module.exports = {
 
 async function listWords(message, command, args, color) {
   const guildID = message.guild.id
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+  const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
   const defaultcolor = "#245128";
   if (guild == null) {
@@ -80,13 +74,8 @@ async function listWords(message, command, args, color) {
 
 async function addWords(message, command, args, color) {
   const guildID = message.guild.id
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+  const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
   if (guild == null) {
     await guilds.insertOne({id: guildID, prefix: "c!", color: defaultcolor});
@@ -136,13 +125,8 @@ async function addWords(message, command, args, color) {
 
 async function delWords(message, command, args, color) {
   const guildID = message.guild.id
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+  const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
   if (guild == null) {
     await guilds.insertOne({id: guildID, prefix: "c!", color: defaultcolor});

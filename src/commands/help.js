@@ -1,6 +1,5 @@
 const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
-var MongoClient = require('mongodb').MongoClient;
-const dbURL = process.env.DB_URL;
+const connectToDatabase = require('../utils/connectToDatabase.js');
 
 module.exports = {
   name: "help",
@@ -12,13 +11,8 @@ module.exports = {
 
     const guildID = message.guild.id
     const channelID = message.channel.id
-    const db = new MongoClient(dbURL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    await db.connect();
-    const dbo = db.db("chrysalis");
-    const guilds = dbo.collection("guilds");
+    const db = await connectToDatabase();
+    const guilds = db.db("chrysalis").collection("guilds");
     const guild = await guilds.findOne({id: guildID});
     const modules = guild.modules;
     if (modules==null) return db.close();

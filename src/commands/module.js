@@ -1,10 +1,9 @@
 const { MessageEmbed } = require('discord.js');
 const fetch = require("node-fetch");
 var lang;
-var MongoClient = require('mongodb').MongoClient;
-const dbURL = process.env.DB_URL;
 const defaultModules = require('../defaultModules.json').modules;
 const reloadSlashCommands = require('../utils/reloadSlashCommands.js');
+const connectToDatabase = require('../utils/connectToDatabase.js');
 
 const validModules = defaultModules.map(m => m.name);
 vmembed = new MessageEmbed();
@@ -55,13 +54,8 @@ async function switchModule(message, modulearg, enable, color) {
       return;
   }
   const guildID = message.guild.id
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+  const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
   if (guild == null) return db.close();
   const modules = guild.modules
@@ -92,13 +86,8 @@ async function switchModule(message, modulearg, enable, color) {
 
 async function sendHelp(message, requestedModule, color) {
   const guildID = message.guild.id;
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+  const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
   if (guild == null) return db.close();
   const modules = guild.modules
@@ -171,13 +160,8 @@ async function sendHelp(message, requestedModule, color) {
 
 async function checkAction(message, requestedModule, action, color, args) {
   const guildID = message.guild.id;
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+  const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
   if (guild == null) return db.close();
   const modules = guild.modules;

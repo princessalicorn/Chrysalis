@@ -1,8 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 const fetch = require("node-fetch");
 var lang;
-var MongoClient = require('mongodb').MongoClient;
-const dbURL = process.env.DB_URL;
+const connectToDatabase = require('../utils/connectToDatabase.js');
 
 module.exports = {
   name: "clop",
@@ -103,13 +102,8 @@ async function postBooru(client, query, message, imageID, imageURL, sourceURL, i
 }
 
 async function getFilter(guildID) {
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+  const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
   const clop = guild.modules.find((c) => c.name == 'clop');
   db.close();

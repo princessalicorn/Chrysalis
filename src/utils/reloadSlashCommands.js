@@ -1,5 +1,4 @@
-var MongoClient = require('mongodb').MongoClient;
-const dbURL = process.env.DB_URL;
+const connectToDatabase = require('./connectToDatabase.js');
 
 module.exports = async (client, guild, lang) => {
   const applicationCommands = [];
@@ -31,13 +30,8 @@ module.exports = async (client, guild, lang) => {
 }
 
 async function isEnabled(command, guildID) {
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+  const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
 	if (guild==null) {db.close(); return true;}
   var modules = guild.modules;

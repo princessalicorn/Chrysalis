@@ -4,10 +4,9 @@ const colors = require('colors');
 require('dotenv').config();
 const path = require('path');
 var fs = require('fs');
-var MongoClient = require('mongodb').MongoClient;
-const dbURL = process.env.DB_URL;
 const reloadSlashCommands = require('./utils/reloadSlashCommands.js');
 const announceLevelUp = require('./utils/announceLevelUp.js');
+const connectToDatabase = require('./utils/connectToDatabase.js');
 const Canvas = require('canvas');
 const { fillTextWithTwemoji } = require('node-canvas-with-twemoji-and-discord-emoji');
 const defaultColor = "#245128";
@@ -66,13 +65,8 @@ client.on('guildMemberAdd', async (member) => {
 	const user = member.user;
 
 	const guildID = member.guild.id;
-	const db = new MongoClient(dbURL, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-	});
-	await db.connect();
-	const dbo = db.db("chrysalis");
-	const guilds = dbo.collection("guilds");
+	const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
 	const guild = await guilds.findOne({id: guildID});
 	db.close();
 	if (guild==null) return;
@@ -152,13 +146,8 @@ client.on('guildMemberRemove', async (member) => {
 	const user = member.user;
 
 	const guildID = member.guild.id;
-	const db = new MongoClient(dbURL, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-	});
-	await db.connect();
-	const dbo = db.db("chrysalis");
-	const guilds = dbo.collection("guilds");
+	const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
 	const guild = await guilds.findOne({id: guildID});
 	db.close();
 	if (guild==null) return;
@@ -216,13 +205,8 @@ client.on('interactionCreate', async (i) => {
 client.login(process.env.DISCORD_TOKEN);
 
 async function getPrefix(guildID) {
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+  const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
 	db.close();
   if (guild==null) {
@@ -235,13 +219,8 @@ async function getPrefix(guildID) {
 }
 
 async function getLang(guildID) {
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+	const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
 	db.close();
   if (guild==null) {
@@ -255,13 +234,8 @@ async function getLang(guildID) {
 }
 
 async function getColor(guildID) {
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+	const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
 	db.close();
   if (guild==null) {
@@ -280,13 +254,8 @@ async function isRestricted(command, message) {
 
   const guildID = message.guild.id
   const channelID = message.channel.id
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+	const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
 	if (guild==null) {
 		await createGuild(message.guild.id);
@@ -399,13 +368,8 @@ async function bannedWords(message) {
 
   const guildID = message.guild.id
   const channelID = message.channel.id
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+	const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
   if (guild == null) {
     await createGuild(message.guild.id);
@@ -470,13 +434,8 @@ async function boostEmbed(newMember) {
   const lang = require(`./lang/${langstr}.json`);
 
   const guildID = newMember.guild.id;
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+	const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
   db.close();
   if (guild==null) return;
@@ -500,13 +459,8 @@ async function boostEmbed(newMember) {
 }
 
 async function createGuild(guildID) {
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+	const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
   if (guild==null) {
     await guilds.insertOne({
@@ -525,13 +479,8 @@ async function createGuild(guildID) {
 
 async function checkSuggestion(message) {
   const guildID = message.guild.id;
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+	const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
   db.close();
   if (guild==null) return;
@@ -563,13 +512,8 @@ async function sendDeletedMessage(message) {
 
 	if (guildID == null || guildID == '') return;
 
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+	const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
 	if (guild == null) {
     await createGuild(message.guild.id);
@@ -626,13 +570,8 @@ async function sendEditedMessage(oldMessage, newMessage) {
 
 	if (guildID == null || guildID == '') return;
 
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+	const db = await connectToDatabase();
+	const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
 	if (guild == null) {
     await createGuild(newMessage.guild.id);
@@ -693,13 +632,8 @@ async function addMessageXP(message) {
 
 	if (guildID == null || guildID == '') return;
 
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+	const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
 	if (guild == null) return db.close();
 	const modules = guild.modules;
@@ -752,13 +686,8 @@ async function addVoiceXP(state) {
 
 	if (guildID == null || guildID == '') return;
 
-  const db = new MongoClient(dbURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await db.connect();
-  const dbo = db.db("chrysalis");
-  const guilds = dbo.collection("guilds");
+	const db = await connectToDatabase();
+  const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
 	if (guild == null) return db.close();
 	const modules = guild.modules;

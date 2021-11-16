@@ -1,6 +1,5 @@
-var MongoClient = require('mongodb').MongoClient;
-const dbURL = process.env.DB_URL;
 const { MessageEmbed } = require('discord.js');
+const connectToDatabase = require('../utils/connectToDatabase.js');
 const announceLevelUp = require('../utils/announceLevelUp.js');
 
 module.exports = {
@@ -23,13 +22,8 @@ module.exports = {
 
       const guildID = message.guild.id;
 
-      const db = new MongoClient(dbURL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
-      await db.connect();
-      const dbo = db.db("chrysalis");
-      const guilds = dbo.collection("guilds");
+      const db = await connectToDatabase();
+      const guilds = db.db("chrysalis").collection("guilds");
       const guild = await guilds.findOne({id: guildID});
     	if (guild == null) return db.close();
     	const modules = guild.modules;
@@ -51,6 +45,7 @@ module.exports = {
       user.xp = newXP;
       let newLevel = Math.trunc((Math.sqrt(5)/5)*Math.sqrt(user.xp));
       await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
+      db.close();
       if ((currentLevel != newLevel) && rank.announceLevelUp)
     	announceLevelUp(
     		client,

@@ -1,8 +1,7 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js');
-var MongoClient = require('mongodb').MongoClient;
-const dbURL = process.env.DB_URL;
 const Canvas = require('canvas');
 const { fillTextWithTwemoji } = require('node-canvas-with-twemoji-and-discord-emoji');
+const connectToDatabase = require('../utils/connectToDatabase.js');
 
 module.exports = {
   name: "welcome",
@@ -28,13 +27,8 @@ module.exports = {
     if (user.user!=null) user = user.user;
 
     const guildID = message.guild.id;
-    const db = new MongoClient(dbURL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    await db.connect();
-    const dbo = db.db("chrysalis");
-    const guilds = dbo.collection("guilds");
+    const db = await connectToDatabase();
+    const guilds = db.db("chrysalis").collection("guilds");
     const guild = await guilds.findOne({id: guildID});
     if (guild==null) return db.close();
     const modules = guild.modules;
