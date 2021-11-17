@@ -21,9 +21,11 @@ module.exports = {
       const defaultModules = require('./defaultModules.json').modules;
       moduleModel = defaultModules.find((m) => m.name == 'rank');
       modules.push(moduleModel);
+      await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
       rank = modules.find((c) => c.name == 'rank');
     }
-    if (!rank.enabled) return db.close();
+    db.close();
+    if (!rank.enabled) return;
 
     let embed = new MessageEmbed()
       .setTitle(lang.leaderboard_title)
