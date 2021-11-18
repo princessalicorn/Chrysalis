@@ -33,8 +33,6 @@ async function changeLang(client, message, newLang) {
   const db = await connectToDatabase();
   const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
-  if (guild==null) return db.close();
-  if (guild.lang == null) return db.close();
   await guilds.updateOne({id: guildID},{ $set: { lang: newLang}});
   db.close();
   lang = require(`../lang/${newLang}.json`);

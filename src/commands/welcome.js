@@ -1,13 +1,12 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js');
 const Canvas = require('canvas');
 const { fillTextWithTwemoji } = require('node-canvas-with-twemoji-and-discord-emoji');
-const connectToDatabase = require('../utils/connectToDatabase.js');
 
 module.exports = {
   name: "welcome",
   alias: ["welcome-image","greeting","greeting-image"],
   admin: true,
-  run: async (client, message, command, args, prefix, color, lang) => {
+  run: async (client, message, command, args, prefix, color, lang, modules) => {
 
     if (!message.channel.permissionsFor(client.user.id).has('ATTACH_FILES')) return message.reply(lang.attach_files_permission_missing);
 
@@ -25,23 +24,8 @@ module.exports = {
     }
     user ??= message.member;
     if (user.user!=null) user = user.user;
-
-    const guildID = message.guild.id;
-    const db = await connectToDatabase();
-    const guilds = db.db("chrysalis").collection("guilds");
-    const guild = await guilds.findOne({id: guildID});
-    if (guild==null) return db.close();
-    const modules = guild.modules;
-    if (modules == null) return db.close();
     const welcome = modules.find((c) => c.name == 'welcome');
-    if (welcome == null) {
-      const defaultModules = require('../defaultModules.json').modules;
-      moduleModel = defaultModules.find((c) => c.name == 'welcome');
-      modules.push(moduleModel);
-      await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
-      bgURL = '';
-    } else bgURL = welcome.background;
-    db.close();
+    bgURL = welcome.background;
 
     // Create canvas
     const canvas = Canvas.createCanvas(960,540);
@@ -92,7 +76,7 @@ module.exports = {
     const channel = message.channel;
 		if (!channel.permissionsFor(client.user.id).has('ATTACH_FILES')) return;
 		if (welcome.message == null) welcome.message = 'default';
-		if (welcome.message == 'off' || welcome.message.trim() == '' || welcome.message == 'none' || welcome.message == 'null' || welcome.message == 'false') {
+		if (welcome.message == '...' || welcome.message == 'off' || welcome.message.trim() == '' || welcome.message == 'none' || welcome.message == 'null' || welcome.message == 'false') {
 			channel.send({files: [attachment]});
 		} else {
 			if (welcome.message == 'default') welcome.message = lang.welcome_to_guild;

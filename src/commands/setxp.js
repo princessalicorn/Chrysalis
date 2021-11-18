@@ -25,9 +25,7 @@ module.exports = {
       const db = await connectToDatabase();
       const guilds = db.db("chrysalis").collection("guilds");
       const guild = await guilds.findOne({id: guildID});
-    	if (guild == null) return db.close();
     	const modules = guild.modules;
-      if (modules==null) return db.close();
     	let rank = modules.find((c) => c.name == 'rank');
       if (rank == null) {
         const defaultModules = require('./defaultModules.json').modules;

@@ -1,14 +1,13 @@
 const { MessageEmbed } = require('discord.js');
 const fetch = require("node-fetch");
 var lang;
-const connectToDatabase = require('../utils/connectToDatabase.js');
 
 module.exports = {
   name: "clop",
   alias: ["boorunsfw","explicit"],
   admin: false,
   nsfw: true,
-  run: async (client, message, command, args, prefix, color, langv) => {
+  run: async (client, message, command, args, prefix, color, langv, modules) => {
 
     // Return if client can't react
     if (!message.channel.permissionsFor(client.user.id).has('VIEW_CHANNEL') || !message.channel.permissionsFor(client.user.id).has('ADD_REACTIONS')) return;
@@ -19,7 +18,7 @@ module.exports = {
       if (message.author) query = message.content.slice(prefix.length+command.length+1);
       else query = args[0];
     }
-    const filter = await getFilter(message.guild.id);
+    const filter = modules.find((c) => c.name == 'clop').filter;
     if (query!=null) {
       if (filter == 200) {
         /* Some extreme tags are hidden by default but they will be
@@ -99,15 +98,4 @@ async function postBooru(client, query, message, imageID, imageURL, sourceURL, i
     return message.reply(lang.no_images_found);
     else return message.editReply(lang.no_images_found);
   }
-}
-
-async function getFilter(guildID) {
-  const db = await connectToDatabase();
-  const guilds = db.db("chrysalis").collection("guilds");
-  const guild = await guilds.findOne({id: guildID});
-  const clop = guild.modules.find((c) => c.name == 'clop');
-  db.close();
-  if (clop == null) return 200;
-  if (clop.filter == null) return 200;
-  return clop.filter;
 }

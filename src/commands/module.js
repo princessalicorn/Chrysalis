@@ -57,9 +57,7 @@ async function switchModule(message, modulearg, enable, color) {
   const db = await connectToDatabase();
   const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
-  if (guild == null) return db.close();
   const modules = guild.modules
-  if (modules == null) return db.close();
   if (validModules.indexOf(modulearg) == -1) {
     db.close();
     vmembed = new MessageEmbed()
@@ -80,7 +78,7 @@ async function switchModule(message, modulearg, enable, color) {
     db.close();
     txt = (enable) ? lang.module_enabled : lang.module_disabled;
     message.channel.send(txt.replace('{0}', modulearg));
-    await reloadSlashCommands(message.guild.client, message.guild, lang);
+    await reloadSlashCommands(message.guild.client, message.guild, guild);
   }
 }
 
@@ -89,73 +87,70 @@ async function sendHelp(message, requestedModule, color) {
   const db = await connectToDatabase();
   const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
-  if (guild == null) return db.close();
   const modules = guild.modules
-  if (modules == null) return db.close();
   if (validModules.indexOf(requestedModule) == -1) {
     db.close();
     message.channel.send({embeds:[vmembed]});
     return;
-  } else {
-    moduleObj = modules.find((c) => c.name == requestedModule);
-    if (moduleObj == null) {
-      moduleModel = defaultModules.find((c) => c.name == requestedModule);
-      modules.push(moduleModel);
-      await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
-      db.close();
-      return sendHelp(message, requestedModule, color);
-    }
-    const helpEmbed = new MessageEmbed().setTitle(requestedModule).setColor(color);
+  }
+  moduleObj = modules.find((c) => c.name == requestedModule);
+  if (moduleObj == null) {
     moduleModel = defaultModules.find((c) => c.name == requestedModule);
-    for (key of Object.keys(moduleModel)) {
-      if (!moduleObj.hasOwnProperty(key)) {
-        moduleObj[key] = moduleModel[key];
-      }
-    }
-    for (key of Object.keys(moduleObj)) {
-      if (!moduleModel.hasOwnProperty(key)) {
-        delete moduleObj[key];
-        continue;
-      }
-      if (key == 'name' || key == 'users') continue;
-      switch (typeof moduleObj[key]) {
-        case 'boolean':
-        if (moduleObj[key]) helpEmbed.addField(key, '✅')
-        else helpEmbed.addField(key, '❌')
-        break;
-        case 'string':
-        var content = moduleObj[key]
-        if (content == '') content = '...'
-        if (key == 'channel' || key == 'announceLevelUpChannel') helpEmbed.addField(key, content == '...' ? content : `<#${content}>`);
-        else if (key == 'message' && content == 'default') {
-          if (requestedModule == 'welcome') helpEmbed.addField(key, lang.welcome_to_guild);
-          else if (requestedModule == 'goodbye') helpEmbed.addField(key, lang.goodbye_user);
-        }
-        else helpEmbed.addField(key, content);
-        break;
-        case 'number':
-        helpEmbed.addField(key, moduleObj[key].toString());
-        case 'object':
-        if (Array.isArray(moduleObj[key])) {
-          if (moduleObj[key].length == 0)
-          helpEmbed.addField(key, '[]');
-          else {
-            if (key=='allowedChannels' || key=='xpBlacklistChannels') {
-              let channels = JSON.parse(JSON.stringify(moduleObj[key])); // Make copy instead of reference
-              for (let key of Object.keys(channels)) {
-                channels[key] = `<#${channels[key]}>`
-              }
-              helpEmbed.addField(key, channels.toString().split(',').join('\n'));
-            }
-            else helpEmbed.addField(key, moduleObj[key].toString().split(',').join('\n'));
-          }
-        }
-      }
-    }
+    modules.push(moduleModel);
     await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
     db.close();
-    message.channel.send({embeds:[helpEmbed]});
+    return sendHelp(message, requestedModule, color);
   }
+  const helpEmbed = new MessageEmbed().setTitle(requestedModule).setColor(color);
+  moduleModel = defaultModules.find((c) => c.name == requestedModule);
+  for (key of Object.keys(moduleModel)) {
+    if (!moduleObj.hasOwnProperty(key)) {
+      moduleObj[key] = moduleModel[key];
+    }
+  }
+  for (key of Object.keys(moduleObj)) {
+    if (!moduleModel.hasOwnProperty(key)) {
+      delete moduleObj[key];
+      continue;
+    }
+    if (key == 'name' || key == 'users') continue;
+    switch (typeof moduleObj[key]) {
+      case 'boolean':
+      if (moduleObj[key]) helpEmbed.addField(key, '✅')
+      else helpEmbed.addField(key, '❌')
+      break;
+      case 'string':
+      var content = moduleObj[key]
+      if (content == '') content = '...'
+      if (key == 'channel' || key == 'announceLevelUpChannel') helpEmbed.addField(key, content == '...' ? content : `<#${content}>`);
+      else if (key == 'message' && content == 'default') {
+        if (requestedModule == 'welcome') helpEmbed.addField(key, lang.welcome_to_guild);
+        else if (requestedModule == 'goodbye') helpEmbed.addField(key, lang.goodbye_user);
+      }
+      else helpEmbed.addField(key, content);
+      break;
+      case 'number':
+      helpEmbed.addField(key, moduleObj[key].toString());
+      case 'object':
+      if (Array.isArray(moduleObj[key])) {
+        if (moduleObj[key].length == 0)
+        helpEmbed.addField(key, '[]');
+        else {
+          if (key=='allowedChannels' || key=='xpBlacklistChannels') {
+            let channels = JSON.parse(JSON.stringify(moduleObj[key])); // Make copy instead of reference
+            for (let key of Object.keys(channels)) {
+              channels[key] = `<#${channels[key]}>`
+            }
+            helpEmbed.addField(key, channels.toString().split(',').join('\n'));
+          }
+          else helpEmbed.addField(key, moduleObj[key].toString().split(',').join('\n'));
+        }
+      }
+    }
+  }
+  await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
+  db.close();
+  message.channel.send({embeds:[helpEmbed]});
 }
 
 async function checkAction(message, requestedModule, action, color, args) {
@@ -163,9 +158,7 @@ async function checkAction(message, requestedModule, action, color, args) {
   const db = await connectToDatabase();
   const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
-  if (guild == null) return db.close();
   const modules = guild.modules;
-  if (modules == null) return db.close();
   if (validModules.indexOf(requestedModule) == -1) {
     db.close();
     message.channel.send({embeds:[vmembed]});

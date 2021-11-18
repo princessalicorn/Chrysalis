@@ -1,41 +1,20 @@
 const canvacord = require('canvacord');
-const { MessageAttachment } = require('discord.js')
-const connectToDatabase = require('../utils/connectToDatabase.js');
+const { MessageAttachment } = require('discord.js');
 
 module.exports = {
   name: "rank",
   alias: ["level"],
   admin: false,
-  run: async (client, message, command, args, prefix, color, lang) => {
-
-    const guildID = message.guild.id
-    const channelID = message.channel.id
-
+  run: async (client, message, command, args, prefix, color, lang, modules) => {
     taggedUser = args[0];
-
     if (taggedUser == null || taggedUser == '') taggedUser = message.member.user.id;
     else {
       if (taggedUser.includes("<@!")) taggedUser = taggedUser.substring(3,taggedUser.length-1);
       if (taggedUser.startsWith("<@")) taggedUser = taggedUser.substring(2,taggedUser.length-1);
     }
-
     try {
       taggedUserObject = await client.users.fetch(taggedUser); // Check if it's a valid user
-      const db = await connectToDatabase();
-      const guilds = db.db("chrysalis").collection("guilds");
-      const guild = await guilds.findOne({id: guildID});
-    	if (guild == null) return db.close();
-    	const modules = guild.modules;
-      if (modules==null) return db.close();
     	let rank = modules.find((c) => c.name == 'rank');
-      if (rank == null) {
-        const defaultModules = require('./defaultModules.json').modules;
-        moduleModel = defaultModules.find((m) => m.name == 'rank');
-        modules.push(moduleModel);
-        await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
-        rank = modules.find((c) => c.name == 'rank');
-      }
-      db.close();
       if (!rank.enabled) return;
       let user = rank.users.find(u => u.id == taggedUser);
       if (user == null) {

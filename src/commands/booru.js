@@ -1,13 +1,12 @@
 const { MessageEmbed } = require('discord.js');
 const fetch = require("node-fetch");
 var lang;
-const connectToDatabase = require('../utils/connectToDatabase.js');
 
 module.exports = {
   name: "booru",
   alias: ["manebooru","brony"],
   admin: false,
-  run: async (client, message, command, args, prefix, color, langv) => {
+  run: async (client, message, command, args, prefix, color, langv, modules) => {
 
     // Return if client can't react
     if (!message.channel.permissionsFor(client.user.id).has('VIEW_CHANNEL') || !message.channel.permissionsFor(client.user.id).has('ADD_REACTIONS')) return;
@@ -18,7 +17,7 @@ module.exports = {
       if (message.author) query = message.content.slice(prefix.length+command.length+1);
       else query = args[0];
     }
-    const filter = await getFilter(message.guild.id);
+    const filter = modules.find((c) => c.name == 'booru').filter;
     if (query!=null) {
       query = `safe,${query}&filter_id=${filter}`;
     } else {
@@ -87,15 +86,4 @@ async function postBooru(client, query, message, imageID, imageURL, sourceURL, i
     return message.reply(lang.no_images_found);
     else return message.editReply(lang.no_images_found);
   }
-}
-
-async function getFilter(guildID) {
-  const db = await connectToDatabase();
-  const guilds = db.db("chrysalis").collection("guilds");
-  const guild = await guilds.findOne({id: guildID});
-  const booru = guild.modules.find((c) => c.name == 'booru');
-  db.close();
-  if (booru == null) return 229;
-  if (booru.filter == null) return 229;
-  return booru.filter;
 }

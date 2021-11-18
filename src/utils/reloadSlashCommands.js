@@ -1,10 +1,9 @@
-const connectToDatabase = require('./connectToDatabase.js');
-
-module.exports = async (client, guild, lang) => {
+module.exports = async (client, guild, guildInfo) => {
+  const lang = require(`../lang/${guildInfo.lang}.json`);
   const applicationCommands = [];
   for (command of client.commands) {
     if (command[0] == 'leaderboard') continue;
-    if (command[1].admin || await isEnabled(command[0], guild.id) == false) continue;
+    if (command[1].admin || !guildInfo.modules.find((c) => c.name == command[0]).enabled) continue;
     let cmdtxt = lang.commands.find((c) => c.name == command[0]);
     if (!cmdtxt) continue;
     applicationCommands.push({
@@ -13,7 +12,7 @@ module.exports = async (client, guild, lang) => {
       options: cmdtxt.options || []
     });
   }
-  if (await isEnabled('rank', guild.id)) {
+  if (guildInfo.modules.find((c) => c.name == 'rank').enabled) {
     let cmdtxt = lang.commands.find((c) => c.name == 'leaderboard');
     applicationCommands.push({
       name: 'leaderboard',
@@ -23,33 +22,8 @@ module.exports = async (client, guild, lang) => {
   }
   try {
     await guild.commands.set(applicationCommands);
-    console.log(`Successfully loaded slash commands on ${guild.name}`)
+    console.log(`Successfully (re)loaded slash commands on ${guild.name}`)
   } catch (e) {
     console.log(`Can't load slash commands on ${guild.name}`)
   }
-}
-
-async function isEnabled(command, guildID) {
-  const db = await connectToDatabase();
-  const guilds = db.db("chrysalis").collection("guilds");
-  const guild = await guilds.findOne({id: guildID});
-	if (guild==null) {db.close(); return true;}
-  var modules = guild.modules;
-  if (modules==null) {db.close(); return true;}
-
-  const fixedModules = modules.filter(m => {
-    return m !== null;
-  });
-
-  if (fixedModules.length != modules.length) {
-    console.log(`Broken modules found on guild with ID ${guildID}`);
-    modules = fixedModules;
-    await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
-  }
-
-	const cmdModule = modules.find((c) => c.name == command);
-	if (cmdModule==null) {db.close(); return true;}
-	db.close();
-	return cmdModule.enabled;
-
 }

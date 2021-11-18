@@ -43,8 +43,6 @@ async function changePrefix(message, newPrefix, lang) {
   const db = await connectToDatabase();
   const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
-  if (guild==null) return db.close();
-  if (guild.prefix == null) return db.close();
   await guilds.updateOne({id: guildID},{ $set: { prefix: newPrefix}});
   db.close();
   message.channel.send(lang.prefix_was_changed_to.replace('{0}', newPrefix));

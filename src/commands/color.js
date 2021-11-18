@@ -59,8 +59,6 @@ async function changeColor(message, newColor, lang) {
   const db = await connectToDatabase();
   const guilds = db.db("chrysalis").collection("guilds");
   const guild = await guilds.findOne({id: guildID});
-  if (guild==null) return db.close();
-  if (guild.color == null) return db.close();
   await guilds.updateOne({id: guildID},{ $set: { color: newColor}});
   db.close();
   const embed = new MessageEmbed()

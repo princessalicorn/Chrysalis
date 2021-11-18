@@ -1,32 +1,13 @@
 const { MessageEmbed } = require('discord.js')
-const connectToDatabase = require('../utils/connectToDatabase.js');
 
 module.exports = {
   name: "leaderboard",
   alias: ["lb","highscores","top","leaderboards"],
   admin: false,
-  run: async (client, message, command, args, prefix, color, lang) => {
+  run: async (client, message, command, args, prefix, color, lang, modules) => {
 
-    const guildID = message.guild.id
-    const channelID = message.channel.id
-
-    const db = await connectToDatabase();
-    const guilds = db.db("chrysalis").collection("guilds");
-    const guild = await guilds.findOne({id: guildID});
-  	if (guild == null) return db.close();
-  	const modules = guild.modules;
-    if (modules==null) return db.close();
   	let rank = modules.find((c) => c.name == 'rank');
-    if (rank == null) {
-      const defaultModules = require('./defaultModules.json').modules;
-      moduleModel = defaultModules.find((m) => m.name == 'rank');
-      modules.push(moduleModel);
-      await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
-      rank = modules.find((c) => c.name == 'rank');
-    }
-    db.close();
     if (!rank.enabled) return;
-
     let embed = new MessageEmbed()
       .setTitle(lang.leaderboard_title)
       .setColor(color)
