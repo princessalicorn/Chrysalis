@@ -344,7 +344,7 @@ async function createGuild(guildID) {
       color: defaultColor,
       modules: defaultModules
     });
-		console.log(`Created guild ${client.guilds.cache.get(guildID).name} with ID ${guildID}`);
+		console.log(`Created guild ${await client.guilds.cache.get(guildID).name} with ID ${guildID}`);
   }
   db.close();
 	await reloadSlashCommands(client, client.guilds.cache.get(guildID), await getGuildInfo(guildID));
@@ -531,8 +531,6 @@ async function addVoiceXP(state) {
 }
 
 async function getGuildInfo(guildID) {
-
-	console.log(colors.red('got guild info'));
 
 	const db = await connectToDatabase();
 	const guilds = db.db('chrysalis').collection('guilds');
