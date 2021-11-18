@@ -36,7 +36,7 @@ async function changeLang(client, message, newLang) {
   await guilds.updateOne({id: guildID},{ $set: { lang: newLang}});
   db.close();
   lang = require(`../lang/${newLang}.json`);
-  reloadSlashCommands(client, message.guild, lang);
+  reloadSlashCommands(client, message.guild, guild);
   if (message.author) message.channel.send(lang.new_lang_message);
   else message.editReply(lang.new_lang_message);
 }
