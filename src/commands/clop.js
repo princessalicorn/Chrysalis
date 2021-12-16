@@ -19,21 +19,16 @@ module.exports = {
       else query = args[0];
     }
     const filter = modules.find((c) => c.name == 'clop').filter;
+
+    /* Some tags are hidden by default but they will be
+    shown anyways if you explicitly search for them.
+    For more customization, use your own filter. */
+    const f = ['vore','inflation','fat fetish','fart fetish','fart','scat','diaper','gore'];
     if (query!=null) {
-      if (filter == 200) {
-        /* Some extreme tags are hidden by default but they will be
-        shown anyways if you explicitly search for them. */
-        const fetishes = ["vore","inflation","fat fetish","scat","diaper","gore"];
-        for (fetish of fetishes) {
-          if (query.includes(fetish)) {
-            filter = 267;
-            break;
-          }
-        }
-      }
+      if (filter == 200) for (i of f) if (!query.includes(i)) query += `,-${i}`;
       query = `explicit,${query}&filter_id=${filter}`;
     } else {
-      query = `explicit&filter_id=${filter}`;
+      query = `-${f.toString().replaceAll(',',',-')}&filter_id=${filter}`;
     }
     query = `${query}&per_page=50`;
     getClop(client, query, message, color, 1);
