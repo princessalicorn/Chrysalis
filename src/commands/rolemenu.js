@@ -13,6 +13,7 @@ module.exports = {
       .setDescription(`${prefix}rolemenu roleID roleID roleID...`)
       .setColor(color)
 
+    args = [...new Set(args)];
     const roles = [];
 
     for (role of args.keys()) {
