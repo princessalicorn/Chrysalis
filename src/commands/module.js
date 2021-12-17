@@ -58,7 +58,6 @@ async function switchModule(message, modulearg, enable, color) {
       return;
   }
   if (validModules.indexOf(modulearg) == -1) {
-    db.close();
     vmembed = new MessageEmbed()
     .setTitle(lang.valid_modules)
     .setColor(color)
