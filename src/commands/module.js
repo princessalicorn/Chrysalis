@@ -8,12 +8,19 @@ const connectToDatabase = require('../utils/connectToDatabase.js');
 const validModules = defaultModules.map(m => m.name);
 vmembed = new MessageEmbed();
 
+/*
+
+DISCLAIMER:
+I had no idea what the fuck I was doing.
+Please don't kill me.
+
+*/
 
 module.exports = {
   name: "module",
   alias: ["modules","editmodule","config","enable","disable"],
   admin: true,
-  run: (client, message, command, args, prefix, color, langv) => {
+  run: (client, message, command, args, prefix, color, langv, modules) => {
 
     lang = langv;
 
@@ -33,13 +40,9 @@ module.exports = {
 
     switch (action) {
       case "enable":
-      switchModule(message, requestedModule, true, color);
-      break;
-
       case "disable":
-      switchModule(message, requestedModule, false, color);
+      switchModule(message, requestedModule, action == 'enable', color);
       break;
-
       default:
       checkAction(message, requestedModule, action, color, args);
       break;
@@ -49,15 +52,11 @@ module.exports = {
 }
 
 async function switchModule(message, modulearg, enable, color) {
+  // Enables or disables a module
   if (modulearg == null || modulearg == "") {
       message.channel.send({embeds:[vmembed]})
       return;
   }
-  const guildID = message.guild.id
-  const db = await connectToDatabase();
-  const guilds = db.db("chrysalis").collection("guilds");
-  const guild = await guilds.findOne({id: guildID});
-  const modules = guild.modules
   if (validModules.indexOf(modulearg) == -1) {
     db.close();
     vmembed = new MessageEmbed()
@@ -67,6 +66,11 @@ async function switchModule(message, modulearg, enable, color) {
     message.channel.send({embeds:[vmembed]});
     return;
   } else {
+    const guildID = message.guild.id;
+    const db = await connectToDatabase();
+    const guilds = db.db("chrysalis").collection("guilds");
+    const guild = await guilds.findOne({id: guildID});
+    const modules = guild.modules;
     const desiredModule = modules.find((c) => c.name == modulearg);
     if (desiredModule==null) {
       moduleModel = defaultModules.find((c) => c.name == modulearg);
