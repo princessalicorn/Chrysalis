@@ -10,16 +10,11 @@ module.exports = {
     // Return if client can't react
     if (!message.channel.permissionsFor(client.user.id).has('VIEW_CHANNEL') || !message.channel.permissionsFor(client.user.id).has('ADD_REACTIONS')) return;
 
-    var query = await parseQuery(message, args, prefix);
-
     const filter = modules.find((c) => c.name == 'booru').filter;
+    var query = await parseQuery(message, command, args, prefix);
+    
+    query = query!='' ? `safe,${query}&filter_id=${filter}&per_page=50` : `safe&filter_id=${filter}&per_page=50`;
 
-    if (query!='') {
-      query = `safe,${query}&filter_id=${filter}`;
-    } else {
-      query = `safe&filter_id=${filter}`;
-    }
-    query = `${query}&per_page=50`;
     getBooru(client, query, message, color, 1, lang);
   }
 }

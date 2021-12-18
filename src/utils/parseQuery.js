@@ -1,4 +1,4 @@
-module.exports = async (message, args, prefix) => {
+module.exports = async (message, command, args, prefix) => {
   var query = '';
   if (args.length>0) {
     if (message.author) query = message.content.slice(prefix.length+command.length+1);
