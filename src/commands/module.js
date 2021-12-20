@@ -81,7 +81,7 @@ async function switchModule(message, modulearg, enable, color) {
     db.close();
     txt = (enable) ? lang.module_enabled : lang.module_disabled;
     message.channel.send(txt.replace('{0}', modulearg));
-    await reloadSlashCommands(message.guild.client, message.guild, guild);
+    await reloadSlashCommands(message.client, message.guild, guild);
   }
 }
 
@@ -188,6 +188,7 @@ async function checkAction(message, requestedModule, action, color, args) {
       await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
       db.close();
       message.channel.send(lang.module_reset);
+      await reloadSlashCommands(message.client, message.guild, guild);
     } else {
       if (moduleObj[args[1]] == null) {
         db.close();
