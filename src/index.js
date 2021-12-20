@@ -23,7 +23,7 @@ client.on('ready', async () => {
 
 client.on('guildCreate', (guild) => {
   console.log(`Client joined guild ${guild.name} with ID ${guild.id}`);
-  createGuild(guild.id);
+  createGuild(guild, true);
 });
 
 client.on('messageCreate', async (message) => {
@@ -31,7 +31,7 @@ client.on('messageCreate', async (message) => {
 	if (message.guild == null) return; // Ignore if message is a DM
 	if (message.author.bot) return;
 
-	let guildInfo = await getGuildInfo(message.guild.id);
+	let guildInfo = await getGuildInfo(message.guild);
 
   // Send help if bot is tagged
   if (message.content == `<@!${client.user.id}>` || message.content == `<@${client.user.id}>`) await sendHelp(message, guildInfo);
@@ -58,7 +58,7 @@ client.on('messageDelete', (message) => {
 });
 
 client.on('guildMemberAdd', async (member) => {
-	const guildInfo = await getGuildInfo(member.guild.id);
+	const guildInfo = await getGuildInfo(member.guild);
 	const lang = require(`./lang/${guildInfo.lang}.json`);
 	const welcome = guildInfo.modules.find((c) => c.name == 'welcome');
 	if (welcome == null || !welcome.enabled) return;
@@ -72,7 +72,7 @@ client.on('guildMemberAdd', async (member) => {
 
 client.on('guildMemberRemove', async (member) => {
 	const user = member.user;
-	const guildInfo = await getGuildInfo(member.guild.id);
+	const guildInfo = await getGuildInfo(member.guild);
 	const lang = require(`./lang/${guildInfo.lang}.json`);
 	const goodbye = guildInfo.modules.find((c) => c.name == 'goodbye');
 	if (!goodbye.enabled) return;
@@ -112,7 +112,7 @@ client.on('interactionCreate', async (i) => {
 	if (!i.member) i.member = await i.guild.members.fetch(i.user.id);
 	await i.member.fetch(true);
 	if (i.guild.me.roles.highest.position < i.guild.roles.cache.get(roleID).position) {
-		let guildInfo = await getGuildInfo(i.guild.id);
+		let guildInfo = await getGuildInfo(i.guild);
 		let lang = require(`./lang/${guildInfo.lang}.json`);
 		return i.user.send(lang.chrysalis_role_too_low);
 	}
@@ -162,7 +162,7 @@ async function runCommand(message, guildInfo) {
 
 async function runSlashCommand(i) {
 
-	let guildInfo = await getGuildInfo(i.guild.id);
+	let guildInfo = await getGuildInfo(i.guild);
   if (!i.channel.permissionsFor(client.user.id).has('SEND_MESSAGES') || !i.channel.permissionsFor(client.user.id).has('VIEW_CHANNEL')) return;
   let lang = require(`./lang/${guildInfo.lang}.json`);
 
@@ -194,7 +194,7 @@ async function registerSlashCommands() {
 		console.log(jsfile+" loaded");
 	}
 	for (guild of client.guilds.cache) {
-		let guildInfo = await getGuildInfo(guild.id);
+		let guildInfo = await getGuildInfo(guild[1]);
 		await reloadSlashCommands(client, guild[1], guildInfo);
 	}
 }
@@ -206,7 +206,7 @@ async function bannedWords(message, guildInfo) {
 	if (message.author.id == client.user.id) return;
   if (!message.channel.permissionsFor(client.user.id).has('MANAGE_MESSAGES')) return;
 
-	if (guildInfo == null) guildInfo = await getGuildInfo(message.guild.id);
+	if (guildInfo == null) guildInfo = await getGuildInfo(message.guild);
 	const lang = require(`./lang/${guildInfo.lang}.json`);
 	const modules = guildInfo.modules;
 	const bannedwords = modules.find((c) => c.name == "bannedwords");
@@ -250,7 +250,7 @@ async function sendHelp(message, guildInfo) {
 }
 
 async function boostEmbed(newMember) {
-	const guildInfo = getGuildInfo(newMember.guild.id);
+	const guildInfo = getGuildInfo(newMember.guild);
 	const lang = require(`./lang/${guildInfo.lang}.json`);
   const modules = guildInfo.modules;
   const nitro = modules.find((c) => c.name == 'nitro');
@@ -269,11 +269,12 @@ async function boostEmbed(newMember) {
   }
 }
 
-async function createGuild(guildID) {
+async function createGuild(guild, rsc) {
+	let guildID = guild.id;
 	const db = await connectToDatabase();
   const guilds = db.db("chrysalis").collection("guilds");
-  const guild = await guilds.findOne({id: guildID});
-  if (guild==null) {
+  const guildo = await guilds.findOne({id: guildID});
+  if (guildo==null) {
     await guilds.insertOne({
       id: guildID,
 			lang: "en",
@@ -282,10 +283,10 @@ async function createGuild(guildID) {
       color: defaultColor,
       modules: defaultModules
     });
-		console.log(`Created guild ${await client.guilds.cache.get(guildID).name} with ID ${guildID}`);
+		console.log(`Created guild ${guild.name} with ID ${guildID}`);
   }
   db.close();
-	await reloadSlashCommands(client, client.guilds.cache.get(guildID), await getGuildInfo(guildID));
+	if (rsc) await reloadSlashCommands(client, guild, await getGuildInfo(guild));
 }
 
 async function checkSuggestion(message, modules) {
@@ -298,9 +299,9 @@ async function checkSuggestion(message, modules) {
 }
 
 async function sendDeletedMessage(message) {
-	const guildID = message.guild.id;
-	if (guildID == null || guildID == '') return;
-	const guildInfo = await getGuildInfo(guildID);
+	const guild = message.guild;
+	if (guild == null) return;
+	const guildInfo = await getGuildInfo(guild);
 	const modules = guildInfo.modules;
 	const lang = require(`./lang/${guildInfo.lang}.json`);
 	const logs = modules.find((c) => c.name == 'logs');
@@ -333,7 +334,7 @@ async function sendEditedMessage(oldMessage, newMessage) {
 	if (newMessage.author.id == client.user.id) return;
 	const guildID = newMessage.guild.id;
 	if (guildID == null || guildID == '') return;
-	const guildInfo = await getGuildInfo(newMessage.guild.id);
+	const guildInfo = await getGuildInfo(newMessage.guild);
 	const lang = require(`./lang/${guildInfo.lang}.json`);
 	const modules = guildInfo.modules;
 	const logs = modules.find((c) => c.name == 'logs');
@@ -468,16 +469,16 @@ async function addVoiceXP(state) {
 	db.close();
 }
 
-async function getGuildInfo(guildID) {
-
+async function getGuildInfo(guild) {
+	let guildID = guild.id;
 	const db = await connectToDatabase();
 	const guilds = db.db('chrysalis').collection('guilds');
-	let guild = await guilds.findOne({id: guildID});
-	if (guild == null) {
-		await createGuild(guildID);
-		guild = await guilds.findOne({id: guildID});
+	let guildo = await guilds.findOne({id: guildID});
+	if (guildo == null) {
+		await createGuild(guild, false);
+		guildo = await guilds.findOne({id: guildID});
 	}
-	const modules = guild.modules;
+	let modules = guildo.modules;
 	const fixedModules = modules.filter(m => {
     return m !== null;
   });
@@ -509,5 +510,5 @@ async function getGuildInfo(guildID) {
 	}
 	await guilds.updateOne({id: guildID},{ $set: { modules: modules}});
 	db.close();
-	return guild;
+	return guildo;
 }
