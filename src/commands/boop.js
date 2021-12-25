@@ -1,54 +1,10 @@
-const { MessageEmbed } = require('discord.js');
+const actionEmbed = require('../utils/actionEmbed.js');
 
 module.exports = {
   name: "boop",
   alias: ["boops"],
   admin: false,
   run: async (client, message, command, args, prefix, color, lang) => {
-
-    if (args[0]==null || args[0]=="") return message.reply(lang.please_specify_a_user);
-
-    author = message.member.nickname || message.member.user.username;
-
-    var onSelf = false;
-    var onChrysalis = false;
-
-    if (message.mentions?.members.first()) {
-      if (message.mentions.members.first().user.id == message.author.id) onSelf = true;
-      if (message.mentions.members.first().user.id == client.user.id) onChrysalis = true;
-      if (message.mentions.members.first().nickname)
-      targetUser = message.mentions.members.first().nickname
-      else targetUser = message.mentions.members.first().user.username
-      if (message.mentions.members.first().displayHexColor!="#000000")
-      color = message.mentions.members.first().displayHexColor;
-    }
-    else if (message.mentions?.users.first()) targetUser = message.mentions.users.first().username;
-    else if (args[0].startsWith("<@!")) {
-      try {
-        targetUser = await client.users.fetch(args[0].substring(3,args[0].length-1));
-        if (targetUser.id == client.user.id) onChrysalis = true;
-        targetUser = targetUser.username;
-      } catch (e) {
-        targetUser = args[0];
-      }
-    } else if (args[0].startsWith("<@")) {
-      try {
-        targetUser = await client.users.fetch(args[0].substring(2,args[0].length-1));
-        if (targetUser.id == client.user.id) onChrysalis = true;
-        targetUser = targetUser.username;
-      } catch (e) {
-        targetUser = args[0];
-      }
-    } else {
-      try {
-        targetUser = await client.users.fetch(args[0]);
-        if (targetUser.id == client.user.id) onChrysalis = true;
-        targetUser = targetUser.username;
-      } catch (e) {
-        targetUser = args.toString().split(',').join(' ');
-      }
-    }
-    if (targetUser == '@everyone' || targetUser == '@here') targetUser = 'everypony';
 
     const gifs = [
       "https://cdn.discordapp.com/attachments/862296245922037800/862297017576718356/2bf.gif",
@@ -62,19 +18,27 @@ module.exports = {
       "https://cdn.discordapp.com/attachments/862296245922037800/862297089329070080/uwuwuwu.gif"
     ];
 
-    const embed = new MessageEmbed()
-    .setColor(color);
-
-    if (onSelf) embed.setTitle(lang.boop_self.replace(`{0}`,author))
-    .setImage("https://cdn.discordapp.com/attachments/862296245922037800/862297045339602984/cd0.gif");
-    else if (onChrysalis) embed.setTitle(lang.boop_chrysalis.replace(`{0}`,author))
-    .setImage("https://cdn.discordapp.com/attachments/862296245922037800/874339788264734720/-_chrysalis.gif");
-    else embed.setTitle(lang.boop_title.replace('{0}',author).replace('{1}',targetUser))
-    .setImage(gifs[Math.floor(Math.random() * gifs.length)])
-
-    if (message.author == null) message.editReply({embeds:[embed]});
-    else message.channel.send({embeds:[embed]});
+    actionEmbed(
+      message,
+      color,
+      args,
+      {
+        text: lang.boop_title,
+        gifs: gifs,
+        onSelf: {
+          text: lang.boop_self,
+          gifs: ['https://cdn.discordapp.com/attachments/862296245922037800/862297045339602984/cd0.gif']
+        },
+        onChrysalis: {
+          text: lang.boop_chrysalis,
+          gifs: ['https://cdn.discordapp.com/attachments/862296245922037800/874339788264734720/-_chrysalis.gif']
+        },
+        onEverypony: {
+          text: lang.boop_title.replace('{1}', 'everypony'),
+          gifs: ['https://cdn.discordapp.com/attachments/862296245922037800/876471497655468032/-_everypony.gif']
+        }
+      }
+    );
 
   }
-
 }
