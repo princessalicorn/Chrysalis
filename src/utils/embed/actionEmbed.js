@@ -23,7 +23,7 @@ module.exports = async (message, color, args, action) => {
 
   if (targetUser == '@everyone' || targetUser == '@here' || targetUser == '@everypony') targetUser = 'everypony';
 
-  const embed = new MessageEmbed()
+  let embed = new MessageEmbed()
   .setColor(color);
 
   if (onSelf) embed

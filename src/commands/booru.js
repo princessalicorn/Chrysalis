@@ -1,5 +1,5 @@
-const getBooru = require('../utils/getBooru.js');
-const parseQuery = require('../utils/parseQuery.js');
+const fetchImage = require('../utils/booru/fetchImage.js');
+const parseQuery = require('../utils/booru/parseQuery.js');
 
 module.exports = {
   name: "booru",
@@ -12,9 +12,9 @@ module.exports = {
 
     const filter = modules.find((c) => c.name == 'booru').filter;
     var query = await parseQuery(message, command, args, prefix);
-    
+
     query = query!='' ? `safe,${query}&filter_id=${filter}&per_page=50` : `safe&filter_id=${filter}&per_page=50`;
 
-    getBooru(client, query, message, color, 1, lang);
+    fetchImage(client, query, message, color, 1, lang);
   }
 }

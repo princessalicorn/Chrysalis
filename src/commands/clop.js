@@ -1,5 +1,5 @@
-const getBooru = require('../utils/getBooru.js');
-const parseQuery = require('../utils/parseQuery.js');
+const fetchImage = require('../utils/booru/fetchImage.js');
+const parseQuery = require('../utils/booru/parseQuery.js');
 
 module.exports = {
   name: "clop",
@@ -25,6 +25,6 @@ module.exports = {
       query = `-${f.toString().replaceAll(',',',-')}&filter_id=${filter}&per_page=50`;
     }
     query = `${query}`;
-    getBooru(client, query, message, color, 1, lang);
+    fetchImage(client, query, message, color, 1, lang);
   }
 }

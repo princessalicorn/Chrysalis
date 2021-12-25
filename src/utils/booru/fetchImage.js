@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 const fetch = require("node-fetch");
 
-module.exports = async function getBooru(client, query, message, color, numberOfPages, lang) {
+module.exports = async function fetchImage(client, query, message, color, numberOfPages, lang) {
   if (numberOfPages > 1) randomPage = Math.floor(Math.random() * numberOfPages)+1;
   else randomPage = 1;
   try {
@@ -19,7 +19,7 @@ module.exports = async function getBooru(client, query, message, color, numberOf
         imageCount = json.total;
         if (numberOfPages == 1 && imageCount > 50) {
           numberOfPages = Math.trunc(imageCount/50)+1;
-          return getBooru(client, query, message, color, numberOfPages, lang);
+          return fetchImage(client, query, message, color, numberOfPages, lang);
         }
 
         // Prepare embed

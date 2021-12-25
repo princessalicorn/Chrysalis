@@ -5,7 +5,7 @@ require('dotenv').config();
 const path = require('path');
 var fs = require('fs');
 const reloadSlashCommands = require('./utils/reloadSlashCommands.js');
-const announceLevelUp = require('./utils/announceLevelUp.js');
+const announceLevelUp = require('./utils/embed/announceLevelUp.js');
 const connectToDatabase = require('./utils/connectToDatabase.js');
 const defaultColor = "#245128";
 const defaultModules = require('./defaultModules.json').modules;
@@ -66,7 +66,7 @@ client.on('guildMemberAdd', async (member) => {
 	if (channel == null) return;
 	if (!channel.permissionsFor(client.user.id).has('SEND_MESSAGES')) return;
   if (!channel.permissionsFor(client.user.id).has('ATTACH_FILES')) return;
-	const welcomeCard = require('./utils/welcomeCard.js');
+	const welcomeCard = require('./utils/embed/welcomeCard.js');
 	welcomeCard(lang, welcome.background, channel, member.user, welcome.message || 'default');
 });
 

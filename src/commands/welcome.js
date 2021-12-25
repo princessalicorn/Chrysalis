@@ -1,4 +1,4 @@
-const welcomeCard = require('../utils/welcomeCard.js');
+const welcomeCard = require('../utils/embed/welcomeCard.js');
 
 module.exports = {
   name: "welcome",

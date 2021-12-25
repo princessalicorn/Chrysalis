@@ -1,4 +1,4 @@
-const actionEmbed = require('../utils/actionEmbed.js');
+const actionEmbed = require('../utils/embed/actionEmbed.js');
 
 module.exports = {
   name: "hug",

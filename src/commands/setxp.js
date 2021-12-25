@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 const connectToDatabase = require('../utils/connectToDatabase.js');
-const announceLevelUp = require('../utils/announceLevelUp.js');
+const announceLevelUp = require('../utils/embed/announceLevelUp.js');
 
 module.exports = {
   name: "setxp",
