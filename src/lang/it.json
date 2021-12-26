@@ -203,7 +203,7 @@
   "lovemeter_messages": ["Triste.","Incompatibile.","Molto Basso... Solo siete amici.","Probabile amici.","Non è probabile ma non impossibile.","Potrebbe!","È probabile. Voi potete provare.","Molto compatibile! Potreste essere molto carini","Baciate definitivamente.","Potreste essere una relazione meravigliosa","Potreste stare insieme per sempre"],
   "nsfw_only": "Questo comando solo può essere usato in un canale NSFW.",
   "requested_by": "Richiesto di",
-  "how_to_delete": "Clicca ❌ se questa immagine è inappropriate.",
+  "how_to_delete": "Clicca qui se questa immagine è inappropriate.",
   "role_info": "Info del ruolo:",
   "name": "Nome",
   "color": "Colore",

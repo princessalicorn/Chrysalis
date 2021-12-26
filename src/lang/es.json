@@ -203,7 +203,7 @@
   "lovemeter_messages": ["Lamentable.","Nada compatibles.","Muy bajo... Solo amigos.","Posiblemente queden como solo amigos.","Muy poco probable pero puede que haya algo.","Es probable que haya algo, pero no quiero dar ilusiones.","Es bastante probable que haya algo. Se puede intentar.","Bastante compatibles. Podrían ser una linda pareja.","Estos dos están liados seguro.","Pueden llegar a ser una hermosa pareja.","Están destinados a estar juntos para siempre."],
   "nsfw_only": "Este comando solo puede ser enviado a un canal NSFW.",
   "requested_by": "Solicitado por",
-  "how_to_delete": "Pulsa ❌ si la imagen es inapropiada.",
+  "how_to_delete": "Pulsa aquí si la imagen es inapropiada.",
   "role_info": "Información del rol:",
   "name": "Nombre",
   "color": "Color",

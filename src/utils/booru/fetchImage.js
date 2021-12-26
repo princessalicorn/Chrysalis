@@ -1,11 +1,11 @@
-const { MessageEmbed } = require('discord.js');
-const fetch = require("node-fetch");
+const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
+const fetch = require('node-fetch');
 
 module.exports = async function fetchImage(client, query, message, color, numberOfPages, lang) {
   if (numberOfPages > 1) randomPage = Math.floor(Math.random() * numberOfPages)+1;
   else randomPage = 1;
   try {
-    await fetch('https://manebooru.art/api/v1/json/search/images?q=' + query + "&page=" + randomPage)
+    await fetch(`https://manebooru.art/api/v1/json/search/images?q=${query}&page=${randomPage}`)
       .then(res => res.json())
       .then(async json => {
 
@@ -22,7 +22,7 @@ module.exports = async function fetchImage(client, query, message, color, number
           return fetchImage(client, query, message, color, numberOfPages, lang);
         }
 
-        // Prepare embed
+        // Embed message
         let randomImage = json.images[Math.floor(Math.random() * json.images.length)];
         let imageID = randomImage.id;
         let sourceURL = randomImage.source_url;
@@ -36,23 +36,14 @@ module.exports = async function fetchImage(client, query, message, color, number
       		.setColor(color)
       		.setURL(sourceURL && sourceURL != 'https://' ? sourceURL : `https://manebooru.art/images/${imageID}`)
       		.setTitle(lang.image_source)
-      		.setDescription(`${lang.requested_by} ${message.member}`)
-      		.setFooter(lang.how_to_delete);
-
-        // Send embed
-        let sentEmbed;
-        if (message.author) sentEmbed = await message.channel.send({embeds:[embed]});
-        else sentEmbed = await message.editReply({embeds:[embed]});
-        sentEmbed.react("❤️");
-        sentEmbed.react("❌");
-        sentEmbed.createReactionCollector().on('collect', (r, u) => {
-          // Delete on reaction
-          if (r.emoji.name != '❌') return;
-          if (r.count > 2 || u.id == message.member.user.id) {
-            if (sentEmbed.deleted == false) sentEmbed.delete();
-            if (message.author && message.deleted == false && message.channel.permissionsFor(client.user.id).has('MANAGE_MESSAGES')) message.delete();
-          }
-        });
+      		.setDescription(`${lang.requested_by} ${message.member}`);
+        let row = new MessageActionRow().addComponents(new MessageButton({
+          label: lang.how_to_delete,
+          customId: message.author ? `delete-${message.id}` : 'delete',
+          style: 'DANGER'
+        }));
+        if (message.author) await message.channel.send({embeds:[embed],components:[row]});
+        else await message.editReply({embeds:[embed],components:[row]});
       })
   } catch (e) {
     console.log(e)

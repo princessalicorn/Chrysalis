@@ -203,7 +203,7 @@
   "lovemeter_messages": ["Sad.","Incompatible.","Very low... Just friends.","Probably just friends.","Very unlikely but there may be something.","There could be something, but I do not want to give illusions.","Very likely to be something. You can try.","Quite compatible. Could be a cute couple.","These two are making out for sure.","Could be a wonderful couple.","They are meant to be together forever."],
   "nsfw_only": "This command can only be used in NSFW channels.",
   "requested_by": "Requested by",
-  "how_to_delete": "Hit ❌ if this image is inappropriate.",
+  "how_to_delete": "Click here if this image is inappropriate.",
   "role_info": "Role info:",
   "name": "Name",
   "color": "Color",

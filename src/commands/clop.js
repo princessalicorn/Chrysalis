@@ -8,11 +8,8 @@ module.exports = {
   nsfw: true,
   run: async (client, message, command, args, prefix, color, lang, modules) => {
 
-    // Return if client can't react
-    if (!message.channel.permissionsFor(client.user.id).has('VIEW_CHANNEL') || !message.channel.permissionsFor(client.user.id).has('ADD_REACTIONS')) return;
-
-    var query = await parseQuery(message, command, args, prefix);
-    const filter = modules.find((c) => c.name == 'clop').filter;
+    let query = await parseQuery(message, command, args, prefix);
+    let filter = modules.find((c) => c.name == 'clop').filter;
 
     /* Some tags are hidden by default but they will be
     shown anyways if you explicitly search for them.
@@ -24,7 +21,6 @@ module.exports = {
     } else {
       query = `-${f.toString().replaceAll(',',',-')}&filter_id=${filter}&per_page=50`;
     }
-    query = `${query}`;
     fetchImage(client, query, message, color, 1, lang);
   }
 }

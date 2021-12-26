@@ -64,6 +64,7 @@ client.on('guildMemberAdd', async (member) => {
 	if (welcome == null || !welcome.enabled) return;
 	const channel = client.channels.cache.find(channel => channel.id == welcome.channel);
 	if (channel == null) return;
+	if (!channel.permissionsFor(client.user.id).has('VIEW_CHANNEL')) return;
 	if (!channel.permissionsFor(client.user.id).has('SEND_MESSAGES')) return;
   if (!channel.permissionsFor(client.user.id).has('ATTACH_FILES')) return;
 	const welcomeCard = require('./utils/embed/welcomeCard.js');
@@ -80,6 +81,7 @@ client.on('guildMemberRemove', async (member) => {
 	if (channel != null) {
 		if (goodbye.message == null || goodbye.message.trim() == '') goodbye.message = 'default';
 		if (goodbye.message == 'default') goodbye.message = lang.goodbye_user;
+		if (!channel.permissionsFor(client.user.id).has('VIEW_CHANNEL')) return;
 		if (!channel.permissionsFor(client.user.id).has('SEND_MESSAGES')) return;
 		channel.send(goodbye.message.replaceAll('{user}',user.tag).replaceAll('{guild}',member.guild.name));
 	}
@@ -105,20 +107,35 @@ client.on('interactionCreate', async (i) => {
 	if (i.isCommand()) return runSlashCommand(i);
 	if (!i.isButton()) return;
 	if (i.guild == null) return i.deferUpdate();
-	if (!i.customId.startsWith('role-')) return;
-	if (!i.guild.me.permissions.has('MANAGE_ROLES')) return;
-	i.deferUpdate();
-	let roleID = i.customId.replace('role-', '');
-	if (!i.member) i.member = await i.guild.members.fetch(i.user.id);
-	await i.member.fetch(true);
-	if (i.guild.me.roles.highest.position < i.guild.roles.cache.get(roleID).position) {
-		let guildInfo = await getGuildInfo(i.guild);
-		let lang = require(`./lang/${guildInfo.lang}.json`);
-		return i.user.send(lang.chrysalis_role_too_low);
-	}
-	if (!i.member.roles.cache.get(roleID)) i.member.roles.add(roleID);
-	else i.member.roles.remove(roleID);
 
+	// Role menu
+	if (i.customId.startsWith('role-')) {
+		if (!i.guild.me.permissions.has('MANAGE_ROLES')) return;
+		i.deferUpdate();
+		let roleID = i.customId.replace('role-', '');
+		if (!i.member) i.member = await i.guild.members.fetch(i.user.id);
+		await i.member.fetch(true);
+		if (i.guild.me.roles.highest.position < i.guild.roles.cache.get(roleID).position) {
+			let guildInfo = await getGuildInfo(i.guild);
+			let lang = require(`./lang/${guildInfo.lang}.json`);
+			return i.user.send(lang.chrysalis_role_too_low);
+		}
+		if (!i.member.roles.cache.get(roleID)) i.member.roles.add(roleID);
+		else i.member.roles.remove(roleID);
+	}
+
+	// Delete inappropriate images
+	if (i.customId.startsWith('delete')) {
+		try {
+			// Delete message
+			i.message.delete();
+			// Delete command message
+			let rm = await i.channel.messages.fetch(i.customId.slice(i.customId.indexOf('-')+1));
+			if (rm) rm.delete();
+		} catch (e) {
+			// Excepted if message was created with a slash command
+		}
+	}
 });
 
 client.login(process.env.DISCORD_TOKEN);
@@ -133,7 +150,7 @@ async function isRestricted(command, message, modules) {
 
 async function runCommand(message, guildInfo) {
 
-  if (!message.channel.permissionsFor(client.user.id).has('SEND_MESSAGES')) return;
+  if (!message.channel.permissionsFor(client.user.id).has('SEND_MESSAGES') || !message.channel.permissionsFor(client.user.id).has('VIEW_CHANNEL')) return;
 
   const prefix = guildInfo.prefix;
   const lang = require(`./lang/${guildInfo.lang}.json`);
@@ -234,7 +251,7 @@ async function bannedWords(message, guildInfo) {
 
 async function sendHelp(message, guildInfo) {
 
-  if (!message.channel.permissionsFor(client.user.id).has('SEND_MESSAGES')) return;
+  if (!message.channel.permissionsFor(client.user.id).has('SEND_MESSAGES') || !message.channel.permissionsFor(client.user.id).has('VIEW_CHANNEL')) return;
 
   const lang = require(`./lang/${guildInfo.lang}.json`);
 
