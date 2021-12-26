@@ -29,12 +29,13 @@ module.exports = {
 }
 
 async function changeLang(client, message, newLang) {
-  const guildID = message.guild.id;
-  const db = await connectToDatabase();
-  const guilds = db.db("chrysalis").collection("guilds");
-  const guild = await guilds.findOne({id: guildID});
+  let guildID = message.guild.id;
+  let db = await connectToDatabase();
+  let guilds = db.db("chrysalis").collection("guilds");
+  let guild = await guilds.findOne({id: guildID});
   await guilds.updateOne({id: guildID},{ $set: { lang: newLang}});
   db.close();
+  guild.lang = newLang;
   lang = require(`../lang/${newLang}.json`);
   reloadSlashCommands(client, message.guild, guild);
   if (message.author) message.channel.send(lang.new_lang_message);
