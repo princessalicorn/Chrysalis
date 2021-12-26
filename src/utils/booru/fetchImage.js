@@ -27,7 +27,11 @@ module.exports = async function fetchImage(client, query, message, color, number
         let imageID = randomImage.id;
         let sourceURL = randomImage.source_url;
         const embed = new MessageEmbed()
-      		.setAuthor("Manebooru",'https://static.manebooru.art/img/view/2020/8/2/4000004.png',`https://manebooru.art/images/${imageID}`)
+      		.setAuthor({
+            name: 'Manebooru',
+            url: `https://manebooru.art/${imageID}`,
+            iconURL: 'https://static.manebooru.art/img/view/2020/8/2/4000004.png'
+          })
       		.setImage(randomImage.view_url)
       		.setColor(color)
       		.setURL(sourceURL && sourceURL != 'https://' ? sourceURL : `https://manebooru.art/images/${imageID}`)

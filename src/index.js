@@ -308,7 +308,7 @@ async function sendDeletedMessage(message) {
 	if (logs.enabled && logs.channel != "") {
 		const embed = new MessageEmbed()
 			.setTitle(lang.message_deleted)
-			.setAuthor(`${message.author.username}#${message.author.discriminator}`,message.author.displayAvatarURL())
+			.setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL()})
 			.setColor(guildInfo.color)
 			.addField(lang.author,`<@!${message.author.id}>`)
 
@@ -341,7 +341,7 @@ async function sendEditedMessage(oldMessage, newMessage) {
 	if (logs.enabled && logs.channel != "") {
 		const embed = new MessageEmbed()
 			.setTitle(lang.message_edited)
-			.setAuthor(`${newMessage.author.username}#${newMessage.author.discriminator}`,newMessage.author.displayAvatarURL())
+			.setAuthor({name: newMessage.author.tag, iconURL: newMessage.author.displayAvatarURL()})
 			.setColor(guildInfo.color)
 			.addField(lang.author,`<@!${newMessage.author.id}>`)
 

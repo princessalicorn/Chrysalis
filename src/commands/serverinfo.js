@@ -10,7 +10,7 @@ module.exports = {
 
     const embed = new MessageEmbed()
     .setColor(color)
-    .setAuthor(message.guild.name,message.guild.iconURL())
+    .setAuthor({name: message.guild.name, iconURL: message.guild.iconURL()})
     .setThumbnail(message.guild.iconURL())
     .setDescription(`__**${lang.server_info}**__`)
     .addField(lang.server_owner,`${await message.guild.fetchOwner()}`,true)
