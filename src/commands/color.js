@@ -45,8 +45,10 @@ module.exports = {
           });
           collector.on('end', (collected, reason) => {
             if (reason == 'time') {
-              confMsg.delete();
-              if (!message.deleted && message.channel.permissionsFor(client.user.id).has('MANAGE_MESSAGES')) message.delete();
+              try {
+                confMsg.delete();
+                message.delete();
+              } catch (e) {}
             }
           });
         });
