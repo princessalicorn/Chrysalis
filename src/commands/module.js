@@ -130,6 +130,7 @@ async function sendHelp(message, requestedModule, color) {
         if (requestedModule == 'welcome') helpEmbed.addField(key, lang.welcome_to_guild);
         else if (requestedModule == 'goodbye') helpEmbed.addField(key, lang.goodbye_user);
       }
+      else if (key == 'banMessage' && content == 'default') helpEmbed.addField(key, lang.user_was_banned);
       else helpEmbed.addField(key, content);
       break;
       case 'number':

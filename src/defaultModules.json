@@ -105,7 +105,8 @@
       "name": "goodbye",
       "enabled": false,
       "channel": "",
-      "message": "default"
+      "message": "default",
+      "banMessage": "default"
     },
     {
       "name": "mlp",
