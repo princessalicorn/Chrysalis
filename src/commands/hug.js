@@ -16,7 +16,8 @@ module.exports = {
       "https://cdn.discordapp.com/attachments/862296245922037800/874333331221778473/uwuu.gif",
       "https://cdn.discordapp.com/attachments/862296245922037800/874333354353393684/spike.gif",
       "https://cdn.discordapp.com/attachments/862296245922037800/874333362058301520/tactical_hug_incoming.gif",
-      "https://cdn.discordapp.com/attachments/862296245922037800/874333368018432020/2b57ddaa1c0199acf9480ef192299a81.gif"
+      "https://cdn.discordapp.com/attachments/862296245922037800/874333368018432020/2b57ddaa1c0199acf9480ef192299a81.gif",
+      "https://cdn.discordapp.com/attachments/862296245922037800/880736453368365096/equestria-girls-my-little-pony.gif"
     ];
 
     actionEmbed(
@@ -33,6 +34,10 @@ module.exports = {
         onChrysalis: {
           text: lang.hug_chrysalis,
           gifs: ['https://cdn.discordapp.com/attachments/862296245922037800/874339818073632818/-_chrysalis.gif']
+        },
+        onEverypony: {
+          text: lang.boop_title.replace('{1}', 'everypony'),
+          gifs: ['https://cdn.discordapp.com/attachments/862296245922037800/876471497655468032/-_everypony.gif']
         }
       }
     );
