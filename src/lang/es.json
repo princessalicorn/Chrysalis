@@ -113,6 +113,18 @@
       ]
     },
     {
+      "name": "kiss",
+      "description": "Besa a un usuario.",
+      "options": [
+        {
+          "name": "usuario",
+          "type": "USER",
+          "description": "El usuario al que quieres besar.",
+          "required": true
+        }
+      ]
+    },
+    {
       "name": "booru",
       "description": "Envía una imagen de Manebooru.",
       "options": [
@@ -162,6 +174,7 @@
       "love": ["love {usuario 1} {usuario 2 (opcional)}", "Comprueba tu nivel de compatibilidad entre dos usuarios. Si solo escribes un usuario el otro serás tú."],
       "boop": ["boop {usuario}", "Hace boop a un usuario."],
       "hug": ["hug {usuario}", "Abraza a un usuario."],
+      "kiss": ["kiss {usuario}", "Besa a un usuario."],
       "booru": ["booru {búsqueda (opcional)}", "Envía una imagen de Manebooru. Puedes escribir tags para buscar."],
       "clop": ["clop {búsqueda (opcional)}", "Envía una imagen clop de Manebooru. Puedes escribir tags para buscar. Solo se puede usar en canales NSFW.","NSFW"],
       "e621": ["e621 {búsqueda (opcional)}", "Envía una imagen de e621. Puedes escribir tags para buscar. Solo se puede usar en canales NSFW.","NSFW"],
@@ -171,7 +184,6 @@
       ["setprefix {prefijo}", "Establece el prefijo de los comandos del bot en este servidor."],
       ["setlang {idioma}", "Establece el idioma del bot en este servidor."],
       ["setcolor {hex}", "Establece el color hexadecimal predeterminado para mesajes de tipo embed."],
-      ["nsfw {on/off}", "Si se deshabilita, todos los comandos NSFW quedarán deshabilitados y escondidos del menú de ayuda."],
       ["addword {palabra}", "Bloquea una palabra en el servidor."],
       ["delword {palabra}", "Desbloquea una palabra en el servidor."],
       ["addwords {palabras}","Bloquea una frase en el servidor."],
@@ -240,6 +252,9 @@
   "hug_title": "{0} ha abrazado a {1}",
   "hug_self": "{0} se ha abrazado a sí mism@",
   "hug_chrysalis": "{0} trató de abrazar a Chrysalis",
+  "kiss_title": "{0} le ha dado un beso a {1}",
+  "kiss_self": "{0} se ha besado a sí mism@",
+  "kiss_chrysalis": "{0} intentó besar a Chrysalis",
   "server_info": "Información del servidor:",
   "server_id": "ID del servidor",
   "server_owner": "Propietari@ del servidor",

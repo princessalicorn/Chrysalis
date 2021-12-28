@@ -113,6 +113,18 @@
       ]
     },
     {
+      "name": "kiss",
+      "description": "Kiss a user.",
+      "options": [
+        {
+          "name": "user",
+          "type": "USER",
+          "description": "The user you want to kiss.",
+          "required": true
+        }
+      ]
+    },
+    {
       "name": "booru",
       "description": "Sends an image from Manebooru.",
       "options": [
@@ -162,6 +174,7 @@
       "love": ["love {user 1} {user 2 (optional)}", "Checks the compatibility level between two users."],
       "boop": ["boop {user}", "Boops a user."],
       "hug": ["hug {user}", "Hugs a user."],
+      "kiss": ["kiss {user}", "Kiss a user."],
       "booru": ["booru {query (optional)}", "Sends a safe image from Manebooru. You can type search tags."],
       "clop": ["clop {query (optional)}", "Sends a clop image from Manebooru. You can type search tags. Can only be used in NSFW channels.","NSFW"],
       "e621": ["e621 {query (optional)}", "Sends an image from e621. You can type search tags. Can only be used in NSFW channels.","NSFW"],
@@ -171,7 +184,6 @@
       ["setprefix {prefix}", "Sets the prefix of the bot commands in this server."],
       ["setlang {language}", "Sets the language of the bot in this server."],
       ["setcolor {hex}", "Sets the default hex color for embeds."],
-      ["nsfw {on/off}", "When turned off, every NSFW command will be disabled and hidden in the help menu."],
       ["addword {word}", "Blocks a word in the server."],
       ["delword {word}", "Unblocks a word in the server."],
       ["addwords {words}","Blocks a phrase in the server."],
@@ -240,6 +252,9 @@
   "hug_title": "{0} hugged {1}",
   "hug_self": "{0} hugged themself",
   "hug_chrysalis": "{0} tried to hug Chryalis",
+  "kiss_title": "{0} kissed {1}",
+  "kiss_self": "{0} kissed themself",
+  "kiss_chrysalis": "{0} tried to kiss Chrysalis",
   "server_info": "Server info:",
   "server_id": "Server ID",
   "server_owner": "Server owner",

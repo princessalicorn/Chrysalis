@@ -95,6 +95,12 @@
       "allowedChannels": []
     },
     {
+      "name": "kiss",
+      "enabled": true,
+      "restricted": false,
+      "allowedChannels": []
+    },
+    {
       "name": "welcome",
       "enabled": false,
       "channel": "",
