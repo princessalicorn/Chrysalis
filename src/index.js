@@ -25,8 +25,7 @@ const banned = new Set();
 client.on('ready', async () => {
 	console.log(colors.bgWhite.black(`Bot started as ${client.user.tag}`));
 	await registerCommands();
-	let presence = require('./presence.json')
-	client.user.setPresence(presence);
+	refreshPresence();
 	console.log(colors.bgWhite.black(`${client.user.username} is ready on ${client.guilds.cache.size} server${client.guilds.cache.size != 1 ? 's' : ''}!`));
 });
 
@@ -536,4 +535,10 @@ async function getGuildInfo(guild) {
 	await guilds.updateOne({id: guild.id},{ $set: { modules: modules}});
 	db.close();
 	return guildo;
+}
+
+async function refreshPresence() {
+	let presence = require('./presence.json');
+	client.user.setPresence(presence);
+	setInterval(refreshPresence, 3600000);
 }
