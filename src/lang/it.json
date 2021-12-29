@@ -114,12 +114,12 @@
     },
     {
       "name": "kiss",
-      "description": "Kiss a user.",
+      "description": "Bacia un'utente.",
       "options": [
         {
           "name": "utente",
           "type": "USER",
-          "description": "The user you want to kiss.",
+          "description": "L'utente che vuoi baciare",
           "required": true
         }
       ]
@@ -174,7 +174,7 @@
       "love": ["love {utente 1} {utente 2 (opzionale)}", "Verifica la compatibilità tra due utenti."],
       "boop": ["boop {utente}", "Boop un'utente."],
       "hug": ["hug {utente}", "Abbraccia un'utente."],
-      "kiss": ["kiss {utente}", "Kiss a user."],
+      "kiss": ["bacia {utente}", "Bacia un'utente."],
       "booru": ["booru {ricerca (opzionale)}", "Invia un'immagine SFW da Manebooru. Puoi usare termini di ricerca."],
       "clop": ["clop {ricerca (opzionale)}", "Invia un'immagine NSFW da Manebooru. Puoi usare termini di ricerca. Solo può essere usato in un canale NSFW.","NSFW"],
       "e621": ["e621 {ricerca (opzionale)}", "Invia un'immagine da e621. Puoi usare termini di ricerca. Solo può essere usato in un canale NSFW.","NSFW"],
@@ -195,7 +195,7 @@
       ["module {modulo}", "Modifica un modulo."],
       ["rolemenu {ruoloID} {ruoloID} {ruoloID}...", "Crea un rolemenu. Ogni argomenti è un'ID di un ruolo."],
       ["welcome {utene}", "Mostra un'anteprima della carta di benvenuto per l'utente menzionato."],
-      ["setxp {user} {xp}", "Sets the amount of XP that a user has."]
+      ["setxp {utente} {xp}", "Imposta la quantità di xp che un'utente ha."]
     ]
   },
   "wrong_channel": "Il comando che hai inviato non può essere usato in questo canale",
@@ -251,10 +251,10 @@
   "boop_chrysalis": "{0} provava fare un boop a Chrysalis",
   "hug_title": "{0} ha abbracciato {1}",
   "hug_self": "{0} ha abbracciato se stesso",
-  "hug_chrysalis": "{0} tried to hug Chryalis",
-  "kiss_title": "{0} kissed {1}",
-  "kiss_self": "{0} kissed themself",
-  "kiss_chrysalis": "{0} tried to kiss Chrysalis",
+  "hug_chrysalis": "{0} ha provato abbracciare Chrysalis.",
+  "kiss_title": "{0} ha baciato {1}",
+  "kiss_self": "{0} si bacia",
+  "kiss_chrysalis": "{0} provava baciare Chrysalis",
   "server_info": "Informazioni del server:",
   "server_id": "ID del server",
   "server_owner": "Proprietario del server",
