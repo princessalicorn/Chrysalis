@@ -1,18 +1,17 @@
-const { MessageEmbed } = require('discord.js')
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
-  name: "leaderboard",
-  alias: ["lb","highscores","top","leaderboards"],
-  admin: false,
-  run: async (client, message, command, args, prefix, color, lang, modules) => {
+  name: 'leaderboard',
+  alias: ['lb','highscores','top','leaderboards'],
+  run: async (client, message, command, args, lang, guildInfo) => {
 
-  	let rank = modules.find((c) => c.name == 'rank');
+  	let rank = guildInfo.modules.find((c) => c.name == 'rank');
     if (!rank.enabled) return;
     let embed = new MessageEmbed()
       .setTitle(lang.leaderboard_title)
-      .setColor(color)
-      .setThumbnail(await message.guild.iconURL());
-    let description = `${lang.leaderboard_description}\n`;
+      .setColor(guildInfo.color)
+      .setThumbnail(message.guild.iconURL());
+    let description = '';
     let highscores = rank.users.sort((a, b) => (a.xp < b.xp) ? 1 : -1);
     for (i of highscores.slice(0,10).keys()) {
       description+=`${getNumberEmoji(i+1)} ► <@!${highscores[i].id}>

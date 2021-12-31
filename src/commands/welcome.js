@@ -1,18 +1,19 @@
 const welcomeCard = require('../utils/embed/welcomeCard.js');
 
 module.exports = {
-  name: "welcome",
-  alias: ["welcome-card","welcome-image","greeting","greeting-image","greeting-card"],
+  name: 'welcome',
+  alias: ['welcome-card','welcome-image','greeting','greeting-image','greeting-card'],
   admin: true,
-  run: async (client, message, command, args, prefix, color, lang, modules) => {
+  run: async (client, message, command, args, lang, guildInfo) => {
 
     if (!message.channel.permissionsFor(client.user.id).has('ATTACH_FILES')) return message.reply(lang.attach_files_permission_missing);
 
-    var taggedUser = args[0];
-    if (taggedUser!=null) {
-      var user = await message.guild.members.cache.get(taggedUser);
-      if (taggedUser.includes("<@!")) taggedUser = taggedUser.substring(3,taggedUser.length-1);
-      if (taggedUser.startsWith("<@")) taggedUser = taggedUser.substring(2,taggedUser.length-1);
+    let taggedUser = args[0] || message.member.user.id;
+
+    let user = message.guild.members.cache.get(taggedUser)?.user;
+    if (!user) {
+      if (taggedUser.includes('<@!')) taggedUser = taggedUser.substring(3,taggedUser.length-1);
+      if (taggedUser.startsWith('<@')) taggedUser = taggedUser.substring(2,taggedUser.length-1);
       try {
         user ??= await client.users.fetch(taggedUser);
       } catch (e) {
@@ -21,12 +22,8 @@ module.exports = {
       }
     }
 
-    user ??= message.member;
-    if (user.user!=null) user = user.user;
-    const welcome = modules.find((c) => c.name == 'welcome');
-
+    let welcome = guildInfo.modules.find((c) => c.name == 'welcome');
     welcomeCard(lang, welcome.background, message.channel, user, welcome.message || 'default');
 
   }
-
 }

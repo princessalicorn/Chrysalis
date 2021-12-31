@@ -36,7 +36,7 @@ client.on('guildCreate', (guild) => {
 
 client.on('messageCreate', async (message) => {
 
-	if (message.guild == null) return; // Ignore if message is a DM
+	if (!message.guild) return; // Ignore if message is a DM
 	if (message.author.bot) return;
 
 	let guildInfo = await getGuildInfo(message.guild);
@@ -47,8 +47,8 @@ client.on('messageCreate', async (message) => {
 	// Blocked / Banned Words
 	if (await bannedWords(message, guildInfo)) return;
 
-	// Execute command
-  runCommand(message, guildInfo);
+	// Run command and add XP
+  runTextCommand(message, guildInfo);
 
 	// Check the suggestions channel (if enabled)
   checkSuggestion(message, guildInfo.modules);
@@ -71,9 +71,9 @@ client.on('guildMemberAdd', async (member) => {
 	let guildInfo = await getGuildInfo(member.guild);
 	let lang = require(`./lang/${guildInfo.lang}.json`);
 	let welcome = guildInfo.modules.find((c) => c.name == 'welcome');
-	if (welcome == null || !welcome.enabled) return;
+	if (!welcome.enabled) return;
 	let channel = client.channels.cache.find(channel => channel.id == welcome.channel);
-	if (channel == null) return;
+	if (!channel) return;
 	if (!channel.permissionsFor(client.user.id).has('VIEW_CHANNEL')) return;
 	if (!channel.permissionsFor(client.user.id).has('SEND_MESSAGES')) return;
   if (!channel.permissionsFor(client.user.id).has('ATTACH_FILES')) return;
@@ -89,11 +89,11 @@ client.on('guildMemberRemove', async (member) => {
 	let goodbye = guildInfo.modules.find((c) => c.name == 'goodbye');
 	if (!goodbye.enabled) return;
 	let channel = client.channels.cache.find(channel => channel.id == goodbye.channel);
-	if (channel != null) {
-		if (goodbye.message == null || goodbye.message.trim() == '') goodbye.message = 'default';
-		if (goodbye.message == 'default') goodbye.message = lang.goodbye_user;
-		if (goodbye.banMessage == null || goodbye.banMessage.trim() == '') goodbye.banMessage = 'default';
-		if (goodbye.banMessage == 'default') goodbye.banMessage = lang.user_was_banned;
+	if (channel) {
+		goodbye.message ||= 'default';
+		if (goodbye.message == 'default') goodbye.message = lang.defaultValues.goodbye.message;
+		goodbye.banMessage ||= 'default';
+		if (goodbye.banMessage == 'default') goodbye.banMessage = lang.defaultValues.goodbye.banMessage;
 		if (!channel.permissionsFor(client.user.id).has('VIEW_CHANNEL')) return;
 		if (!channel.permissionsFor(client.user.id).has('SEND_MESSAGES')) return;
 		let message = isBan ? goodbye.banMessage : goodbye.message;
@@ -102,8 +102,7 @@ client.on('guildMemberRemove', async (member) => {
 });
 
 client.on('guildMemberUpdate', (oldMember, newMember) => {
-  if (oldMember.premiumSinceTimestamp == 0 && newMember.premiumSinceTimestamp!=0)
-	boostEmbed(newMember);
+  if (!oldMember.premiumSinceTimestamp && newMember.premiumSinceTimestamp) boostEmbed(newMember);
 });
 
 client.on('guildBanAdd', async (ban) => {
@@ -111,11 +110,11 @@ client.on('guildBanAdd', async (ban) => {
 });
 
 client.on('voiceStateUpdate', (oldState, newState) => {
-	if ((newState.channel?.id != null && oldState.channel?.id == null) || (newState.channel?.guild?.id != null && oldState.channel?.guild?.id != newState.channel?.guild?.id)) {
+	if ((newState.channel?.id && !oldState.channel?.id) || (newState.channel?.guild?.id && oldState.channel?.guild?.id != newState.channel?.guild?.id)) {
 		// User joins a voice channel (not switch)
 		onVoiceChat.add(`${newState.member.user.id},${newState.guild.id};${new Date()}`);
 	}
-	if ((oldState.channel?.id != null && newState.channel?.id == null) || (oldState.channel?.guild?.id != null && oldState.channel?.guild?.id != newState.channel?.guild?.id)) {
+	if ((oldState.channel?.id && !newState.channel?.id) || (oldState.channel?.guild?.id && oldState.channel?.guild?.id != newState.channel?.guild?.id)) {
 		// User leaves a voice channel
 		addVoiceXP(oldState);
 	}
@@ -124,14 +123,13 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 client.on('interactionCreate', async (i) => {
 	if (i.isCommand()) return runSlashCommand(i);
 	if (!i.isButton()) return;
-	if (i.guild == null) return i.deferUpdate();
+	if (!i.guild) return i.deferUpdate();
 
 	// Role menu
 	if (i.customId.startsWith('role-')) {
 		if (!i.guild.me.permissions.has('MANAGE_ROLES')) return;
 		i.deferUpdate();
 		let roleID = i.customId.replace('role-', '');
-		if (!i.member) i.member = await i.guild.members.fetch(i.user.id);
 		await i.member.fetch(true);
 		if (i.guild.me.roles.highest.position < i.guild.roles.cache.get(roleID).position) {
 			let guildInfo = await getGuildInfo(i.guild);
@@ -166,31 +164,30 @@ async function isRestricted(command, message, modules) {
 	else return false;
 }
 
-async function runCommand(message, guildInfo) {
+async function runTextCommand(message, guildInfo) {
 
   if (!message.channel.permissionsFor(client.user.id).has('SEND_MESSAGES') || !message.channel.permissionsFor(client.user.id).has('VIEW_CHANNEL')) return;
 
-  let prefix = guildInfo.prefix;
   let lang = require(`./lang/${guildInfo.lang}.json`);
-	let args = message.content.slice(prefix.length).split(/ +/);
+	let args = message.content.slice(guildInfo.prefix.length).split(/ +/);
 	let command = args.shift().toLowerCase();
 	const noxp = ['rank','leaderboard','lb','highscores','top','leaderboards','setxp'];
 	if (noxp.indexOf(command) == -1 && guildInfo.modules.find(m => m.name == 'rank').enabled) await addMessageXP(message);
 
-  if (message.content.startsWith(prefix)) {
+  if (message.content.startsWith(guildInfo.prefix)) {
     let cmd = client.commands.get(command) || client.commands.find((c) => c.alias.includes(command));
     if (cmd) {
       let restricted = false;
       if (!cmd.admin) restricted = await isRestricted(cmd.name, message, guildInfo.modules);
 			else if (!message.member.permissions.has('ADMINISTRATOR')) return;
       if (restricted) return message.author.send(lang.wrong_channel);
-			if (cmd.nsfw == true && !message.channel.nsfw) return message.author.send(lang.nsfw_only);
+			if (cmd.nsfw && !message.channel.nsfw) return message.author.send(lang.nsfw_only);
 			if (cmd.name!='clean') try {
 				await message.channel.sendTyping();
 			} catch (e) {
 				// Discord API is down
 			}
-			cmd.run(client, message, command, args, prefix, guildInfo.color, lang, guildInfo.modules);
+			cmd.run(client, message, command, args, lang, guildInfo);
     }
   }
 }
@@ -205,14 +202,14 @@ async function runSlashCommand(i) {
 	let args = i.options.data.map(d => d.value);
 	let cmd = client.commands.get(command) || client.commands.find((c) => c.alias.includes(command));
 	if (cmd) {
-		var restricted = false;
+		let restricted = false;
 		if (!cmd.admin) restricted = await isRestricted(command, i, guildInfo.modules);
 		else if (!i.member.permissions.has('ADMINISTRATOR')) return;
-		if (restricted) return i.user.send(lang.wrong_channel);
-		if (cmd.nsfw == true && !i.channel.nsfw) return i.member.user.send(lang.nsfw_only);
+		if (restricted) return i.reply({content:lang.wrong_channel,ephemeral:true});
+		if (cmd.nsfw && !i.channel.nsfw) return i.reply({content:lang.nsfw_only,ephemeral:true});
 		else {
 			await i.deferReply();
-			cmd.run(client, i, command, args, null, guildInfo.color, lang, guildInfo.modules);
+			cmd.run(client, i, command, args, lang, guildInfo);
 		}
 	}
 
@@ -222,11 +219,11 @@ async function registerCommands() {
 
 	// Load commands
 	client.commands = new Collection();
-	let commands = fs.readdirSync(path.resolve(__dirname, 'commands')).filter((f) => f.endsWith(".js"));
-	for (var jsfile of commands) {
-		let commandfile = require("./commands/"+jsfile);
+	let commands = fs.readdirSync(path.resolve(__dirname, 'commands')).filter((f) => f.endsWith('.js'));
+	for (let jsfile of commands) {
+		let commandfile = require(`./commands/${jsfile}`);
 		client.commands.set(commandfile.name, commandfile);
-		console.log(jsfile+" loaded");
+		console.log(`${jsfile} loaded`);
 	}
 	for (guild of client.guilds.cache) {
 		let guildInfo = await getGuildInfo(guild[1]);
@@ -236,15 +233,13 @@ async function registerCommands() {
 
 async function bannedWords(message, guildInfo) {
 
-	if (message.member == null) return;
   if (message.member.permissions.has('ADMINISTRATOR')) return;
 	if (message.author.id == client.user.id) return;
   if (!message.channel.permissionsFor(client.user.id).has('MANAGE_MESSAGES')) return;
-
-	if (guildInfo == null) guildInfo = await getGuildInfo(message.guild);
+	if (!guildInfo) guildInfo = await getGuildInfo(message.guild);
 	let lang = require(`./lang/${guildInfo.lang}.json`);
-	let modules = guildInfo.modules;
-	let bannedwords = modules.find((c) => c.name == "bannedwords");
+
+	let bannedwords = guildInfo.modules.find((c) => c.name == 'bannedwords');
 	if (!bannedwords.enabled) return false;
 	for (word of bannedwords.words) {
 		if (message.content.toLowerCase().includes(word.toLowerCase())) {
@@ -268,19 +263,16 @@ async function bannedWords(message, guildInfo) {
 }
 
 async function sendHelp(message, guildInfo) {
-
   if (!message.channel.permissionsFor(client.user.id).has('SEND_MESSAGES') || !message.channel.permissionsFor(client.user.id).has('VIEW_CHANNEL')) return;
-
   let lang = require(`./lang/${guildInfo.lang}.json`);
-
 	let embed = new MessageEmbed()
 		.setTitle(client.user.username)
 		.setThumbnail(client.user.displayAvatarURL())
 		.setDescription(`[${lang.invite_the_bot}](https://discord.com/api/oauth2/authorize?client_id=797161820594634762&permissions=8&scope=bot%20applications.commands) | [${lang.website}](https://chrysalis.programmerpony.com) | [${lang.support_server}](https://discord.gg/Vj2jYQKaJP)`)
 		.setColor(guildInfo.color)
 		.addField('💻 GitLab','[Source Code](https://gitlab.com/programmerpony/Chrysalis)',true)
-		.addField(`💞 ${lang.support_the_project}`,'[Buy me a Coffe](https://ko-fi.com/programmerpony)',true)
-		.setFooter(`${lang.the_current_prefix_for_this_server_is} ${guildInfo.prefix}`)
+		.addField(`💞 ${lang.support_the_project}`,'[Buy me a Coffee](https://ko-fi.com/programmerpony)',true)
+		.setFooter({text: `${lang.the_current_prefix_for_this_server_is} ${guildInfo.prefix}`})
 	message.channel.send({embeds:[embed]});
 }
 
@@ -290,17 +282,16 @@ async function boostEmbed(newMember) {
   let modules = guildInfo.modules;
   let nitro = modules.find((c) => c.name == 'nitro');
   if (nitro.enabled && nitro.channel!='') {
-			boosterRole = newMember.guild.roles.premiumSubscriberRole;
-			if (boosterRole == null) embedColor = "#db6de2";
-			else embedColor = boosterRole.color;
-      let emoji = client.emojis.cache.find(emoji => emoji.name == "NitroBoost");
-      boostembed = new MessageEmbed()
-      	.setTitle(`${lang.boost_title}`)
-      	.setDescription(`<a:${emoji.name}:${emoji.id}> ${lang.boost_description} <a:${emoji.name}:${emoji.id}>`)
-      	.setThumbnail(newMember.user.displayAvatarURL())
-      	.setColor(embedColor)
-      let channel = client.channels.cache.find(channel => channel.id == nitro.channel)
-			if (channel!=null) channel.send({content:`${lang.boost_message.replace("{0}",newMember.user)}`,embeds:[boostembed]});
+		let boosterRole = newMember.guild.roles.premiumSubscriberRole;
+		let embedColor = boosterRole?.color || '#db6de2'; // Pink
+    let emoji = client.emojis.cache.find(emoji => emoji.name == 'NitroBoost');
+    boostembed = new MessageEmbed()
+    	.setTitle(`${lang.boost_title}`)
+    	.setDescription(`<a:${emoji.name}:${emoji.id}> ${lang.boost_description} <a:${emoji.name}:${emoji.id}>`)
+    	.setThumbnail(newMember.user.displayAvatarURL())
+    	.setColor(embedColor);
+    let channel = client.channels.cache.find(channel => channel.id == nitro.channel);
+		if (channel) channel.send({content:`${lang.boost_message.replace('{0}',newMember.user)}`,embeds:[boostembed]});
   }
 }
 
@@ -308,12 +299,11 @@ async function createGuild(guild, rsc) {
 	let db = await connectToDatabase();
   let guilds = db.db('chrysalis').collection('guilds');
   let guildo = await guilds.findOne({id: guild.id});
-  if (guildo==null) {
+  if (!guildo) {
     await guilds.insertOne({
       id: guild.id,
 			lang: 'en',
       prefix: 'c!',
-			nsfw: true,
       color: '#245128',
       modules: defaultModules
     });
@@ -324,11 +314,11 @@ async function createGuild(guild, rsc) {
 }
 
 async function checkSuggestion(message, modules) {
-	let suggestions = modules.find((c) => c.name == "suggestions");
+	let suggestions = modules.find((c) => c.name == 'suggestions');
 	if (suggestions.enabled && message.channel.id == suggestions.channel)
-	if (message.content.includes("http://") || message.content.includes("https://") || message.attachments.size>0) {
-		message.react("✅");
-		message.react("❌");
+	if (message.content.includes('http://') || message.content.includes('https://') || message.attachments.size>0) {
+		message.react('✅');
+		message.react('❌');
 	}
 }
 
@@ -344,19 +334,18 @@ async function sendDeletedMessage(message) {
 			.setColor(guildInfo.color)
 			.addField(lang.author,`<@!${message.author.id}>`)
 
-		if (message.content != null && message.content != '')
+		if (message.content)
 		embed.addField(lang.message,message.content.substring(0,1024));
 
 		if (message.attachments.size>0)
-		embed.addField(lang.attachments,message.attachments.map(a => a.name.substring(0,1024)).toString().split(',').join('\n'));
+		embed.addField(lang.attachments,message.attachments.map(a => a.name.substring(0,1024)).join('\n'));
 
 		embed.addField(lang.message_id, message.id);
 
 		embed.addField(lang.channel,`${message.channel} [${lang.jump_to_moment}](${message.url})`)
 
 		let channel = client.channels.cache.find(channel => channel.id == logs.channel);
-		if (channel != null && channel != '' && channel.guild.id == message.guild.id)
-		channel.send({embeds:[embed]});
+		if (channel && channel.guild.id == message.guild.id) channel.send({embeds:[embed]});
 	}
 }
 
@@ -377,19 +366,19 @@ async function sendEditedMessage(oldMessage, newMessage) {
 
 		if (oldMessage.content != newMessage.content) {
 
-			if (oldMessage.content != null && oldMessage.content != '') {
+			if (oldMessage.content) {
 				embed.addField(lang.old_message,oldMessage.content.substring(0,1024));
 			}
 
-			if (newMessage.content != null && newMessage.content != '') {
+			if (newMessage.content) {
 				embed.addField(lang.new_message,newMessage.content.substring(0,1024));
 			}
 
 		}
 
 		if (oldMessage.attachments.size>0 && oldMessage.attachments.size != newMessage.attachments.size) {
-			embed.addField(lang.old_attachments,oldMessage.attachments.map(a => a.name.substring(0,1024)).toString().split(',').join('\n'));
-			if (newMessage.attachments.size>0) embed.addField(lang.new_attachments,oldMessage.attachments.map(a => a.name.substring(0,1024)).toString().split(',').join('\n'));
+			embed.addField(lang.old_attachments,oldMessage.attachments.map(a => a.name.substring(0,1024)).join('\n'));
+			if (newMessage.attachments.size>0) embed.addField(lang.new_attachments,oldMessage.attachments.map(a => a.name.substring(0,1024)).join('\n'));
 		}
 
 		embed.addField(lang.message_id, newMessage.id);
@@ -397,8 +386,7 @@ async function sendEditedMessage(oldMessage, newMessage) {
 		embed.addField(lang.channel,`${newMessage.channel} [${lang.jump_to_moment}](${newMessage.url})`)
 
 		let channel = client.channels.cache.find(channel => channel.id == logs.channel);
-		if (channel != null && channel != '' && channel.guild.id == newMessage.guild.id)
-		channel.send({embeds:[embed]});
+		if (channel && channel.guild.id == newMessage.guild.id) channel.send({embeds:[embed]});
 	}
 }
 
@@ -414,7 +402,7 @@ async function addMessageXP(message) {
 	if (!rank.enabled) return db.close();
 	if (rank.xpBlacklistChannels.indexOf(message.channel.id) != -1) return db.close();
 	let user = rank.users.find(u => u.id == message.author.id);
-	if (user == null) {
+	if (!user) {
 		rank.users.push({id: message.author.id, xp: 0});
 		user = rank.users.find(u => u.id == message.author.id);
 	}
@@ -450,16 +438,15 @@ async function addMessageXP(message) {
 async function addVoiceXP(state) {
 
 	let db = await connectToDatabase();
-  let guilds = db.db("chrysalis").collection("guilds");
+  let guilds = db.db('chrysalis').collection('guilds');
   let guild = await guilds.findOne({id: state.guild.id});
-	if (guild == null) return db.close();
 	let modules = guild.modules;
 	let rank = modules.find((c) => c.name == 'rank');
 	if (!rank.enabled) return db.close();
 	if (rank.xpBlacklistChannels.indexOf(state.channel.id) != -1) return db.close();
 	if (rank.voiceChatCooldown <= 0 || rank.xpInVoiceChat <= 0) return db.close();
 	let user = rank.users.find(u => u.id == state.member.user.id);
-	if (user == null) {
+	if (!user) {
 		rank.users.push({id: state.member.user.id, xp: 0});
 		user = rank.users.find(u => u.id == state.member.user.id);
 	}
@@ -498,7 +485,7 @@ async function getGuildInfo(guild) {
 	let db = await connectToDatabase();
 	let guilds = db.db('chrysalis').collection('guilds');
 	let guildo = await guilds.findOne({id: guild.id});
-	if (guildo == null) {
+	if (!guildo) {
 		await createGuild(guild, false);
 		guildo = await guilds.findOne({id: guild.id});
 	}
@@ -512,11 +499,11 @@ async function getGuildInfo(guild) {
     await guilds.updateOne({id: guild.id},{ $set: { modules: modules}});
   }
 	for (dm of defaultModules) {
-		if (modules.find((c) => c.name == dm.name) == null) modules.push(dm);
+		if (!modules.find((c) => c.name == dm.name)) modules.push(dm);
 	}
 	for (m of modules) {
 		moduleModel = defaultModules.find((c) => c.name == m.name);
-		if (moduleModel == null) {
+		if (!moduleModel) {
 			delete m;
 			continue;
 		}

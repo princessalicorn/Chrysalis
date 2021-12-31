@@ -1,39 +1,39 @@
 const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
+const iconURL = 'https://yayponies.no/favicon-32x32.png';
 let Parser = require('rss-parser');
 let parser = new Parser();
 
 module.exports = {
-  name: "mlp",
-  alias: ["episode","episodes","mylittlepony","torrent","torrents","fim","mlpfim","download"],
-  admin: false,
-  run: async (client, message, command, args, prefix, color, lang) => {
+  name: 'mlp',
+  alias: ['episode','episodes','mylittlepony','torrent','torrents','fim','mlpfim','download'],
+  run: async (client, message, command, args, lang, guildInfo) => {
 
-    season = [];
+    let season = [];
     try { // Just in case yayponies is down
       feed = await parser.parseURL('https://yayponies.no/videos/rss/1it.rss');
     } catch (e) {
       return message.reply(lang.error_fetching_episodes);
     }
     feed.items.forEach(item => {
-      const currentSeason = parseInt(item.title.slice(item.title.indexOf('0'),item.title.indexOf('0')+2));
-      const currentEpisode = parseInt(item.title.slice(item.title.indexOf('x')+1,item.title.indexOf('x')+3));
-      if (season[currentSeason] == null) season[currentSeason] = {episode:[]};
+      let currentSeason = parseInt(item.title.slice(item.title.indexOf('0'),item.title.indexOf('0')+2));
+      let currentEpisode = parseInt(item.title.slice(item.title.indexOf('x')+1,item.title.indexOf('x')+3));
+      season[currentSeason] ??= {episode:[]};
       season[currentSeason].episode[currentEpisode] = {
         title: item.title.slice(item.title.indexOf('0'),item.title.indexOf('|')),
         link: item.link
       }
     });
 
-    seasonEmbed = [];
+    let seasonEmbed = [];
     for (s of Object.keys(season)) {
-      if (s==0) continue;
+      if (!s) continue;
       seasonEmbed[s] = new MessageEmbed()
         .setTitle(`${lang.season} ${s}`)
-        .setColor(color)
-        .setFooter(lang.torrent_footer)
-      var episodes = [];
+        .setColor(guildInfo.color)
+        .setFooter({text:lang.torrent_footer,iconURL:iconURL})
+      let episodes = [];
       for (e of season[s].episode) {
-        if (e==null) continue;
+        if (!e) continue;
         episodes = `${episodes || ''}[${e.title}](${e.link})\n`;
       }
       seasonEmbed[s].setDescription(episodes);
@@ -42,23 +42,24 @@ module.exports = {
     // Movies
     seasonEmbed[10] = new MessageEmbed()
       .setTitle(lang.movies)
-      .setColor(color)
-      .setFooter(lang.torrent_footer)
-      .setDescription('[My '+'Little '+'Pony: '+'The Movie](https://yayponies.no/videos/torrents/YP-1R-TheMovie.mkv.torrent)')
+      .setColor(guildInfo.color)
+      .setFooter({text:lang.torrent_footer,iconURL:iconURL})
+      .setDescription(`[My Little Pony: The Movie](https://yayponies.no/videos/torrents/YP-1R-TheMovie.mkv.torrent)
+        [My Little Pony: A New Generation](https://yayponies.no/videos/torrents/YP-1N-G5-ANewGeneration.mkv.torrent)`);
 
-    const leftButton = new MessageButton()
+    let leftButton = new MessageButton()
       .setStyle('SECONDARY')
       .setLabel('<')
       .setCustomId('left')
       .setDisabled(true);
-    const rightButton = new MessageButton()
+    let rightButton = new MessageButton()
       .setStyle('SECONDARY')
       .setLabel('>')
       .setCustomId('right');
-    const sentEmbed = message.author ? await message.channel.send({embeds:[seasonEmbed[1]], components: [new MessageActionRow().addComponents([leftButton, rightButton])]}) : await message.editReply({embeds:[seasonEmbed[1]], components: [new MessageActionRow().addComponents([leftButton, rightButton])]});
-    const filter = (interaction) => interaction.user.id === message.member.user.id;
-    const collector = sentEmbed.createMessageComponentCollector({filter,  time: 120000 });
-    var currentPage = 1;
+    let sentEmbed = message.author ? await message.channel.send({embeds:[seasonEmbed[1]], components: [new MessageActionRow().addComponents([leftButton, rightButton])]}) : await message.editReply({embeds:[seasonEmbed[1]], components: [new MessageActionRow().addComponents([leftButton, rightButton])]});
+    let filter = (interaction) => interaction.user.id === message.member.user.id;
+    let collector = sentEmbed.createMessageComponentCollector({filter,  time: 120000 });
+    let currentPage = 1;
     collector.on('collect', async (i) => {
       if (i.customId == 'left') {
         if (currentPage > 0) currentPage--;
@@ -78,7 +79,7 @@ module.exports = {
         leftButton.setDisabled(true);
         rightButton.setDisabled(true);
         try {
-          await sentEmbed.edit({embeds:[seasonEmbed[currentPage].setFooter(`${seasonEmbed[currentPage].footer.text}\n${lang.help_time_out}`)], components: [new MessageActionRow().addComponents([leftButton, rightButton])]});
+          await sentEmbed.edit({embeds:[seasonEmbed[currentPage].setFooter({text:`${seasonEmbed[currentPage].footer.text}\n${lang.help_time_out}`, iconURL:iconURL})], components: [new MessageActionRow().addComponents([leftButton, rightButton])]});
         } catch (e) {}
       }
     });

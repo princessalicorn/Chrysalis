@@ -2,14 +2,13 @@ const fetchImage = require('../utils/booru/fetchImage.js');
 const parseQuery = require('../utils/booru/parseQuery.js');
 
 module.exports = {
-  name: "clop",
-  alias: ["boorunsfw","explicit"],
-  admin: false,
+  name: 'clop',
+  alias: ['boorunsfw','explicit'],
   nsfw: true,
-  run: async (client, message, command, args, prefix, color, lang, modules) => {
+  run: async (client, message, command, args, lang, guildInfo) => {
 
-    let query = await parseQuery(message, command, args, prefix);
-    let filter = modules.find((c) => c.name == 'clop').filter;
+    let query = await parseQuery(message, args);
+    let filter = guildInfo.modules.find((c) => c.name == 'clop').filter;
 
     /* Some tags are hidden by default but they will be
     shown anyways if you explicitly search for them.
@@ -21,6 +20,6 @@ module.exports = {
     } else {
       query = `-${f.toString().replaceAll(',',',-')}&filter_id=${filter}&per_page=50`;
     }
-    fetchImage(client, query, message, color, 1, lang);
+    fetchImage(client, query, message, guildInfo.color, 1, lang);
   }
 }

@@ -1,8 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
-const dbURL = process.env.DB_URL;
 
 module.exports = async () => {
-  const db = new MongoClient(dbURL, {
+  let db = new MongoClient(process.env.DB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });

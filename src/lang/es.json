@@ -198,6 +198,15 @@
       ["setxp {usuario} {xp}", "Establece la cantidad de experiencia que tiene un usuario."]
     ]
   },
+  "defaultValues": {
+    "welcome": {
+      "message": "¡Bienvenid@ a **{guild}**! {user}"
+    },
+    "goodbye": {
+      "message": "Adiós, **{user}**. Esperamos volver a verte pronto.",
+      "banMessage": "**{user}** ha sido banead@ del servidor."
+    }
+  },
   "wrong_channel": "El comando que has enviado no se puede usar en ese canal.",
   "blocked_words": "Palabras bloqueadas",
   "list": "Lista",
@@ -243,7 +252,6 @@
   "change_prefix_to": "¿Cambiar el prefijo a **{0}**?",
   "prefix_was_changed_to": "El prefijo fue cambiado a **{0}**",
   "valid_modules": "Módulos válidos",
-  "please_specify_a_user": "Por favor, especifica un usuario.",
   "available_languages": "Idiomas disponibles",
   "new_lang_message": "Ahora hablaré en español.",
   "boop_title": "{0} le ha hecho boop a {1}",
@@ -261,11 +269,9 @@
   "channels": "Canales",
   "server_boosts": "Mejoras del servidor",
   "image_source": "Fuente de la imagen",
-  "please_specify_one_or_more_channels": "Por favor, especifica uno o más canales.",
   "please_specify_a_new_value": "Por favor, especifica un nuevo valor.",
   "value_must_be_true_or_false": "El valor debe ser **true** o **false**.",
   "module_updated": "¡Módulo actualizado!",
-  "module_reset": "¡Módulo reiniciado!",
   "attachments": "Archivos adjuntos",
   "message_id": "ID del mensaje",
   "module_enabled": "Módulo {0} habilitado",
@@ -274,8 +280,6 @@
   "change_color_to": "¿Cambiar color a {0}?",
   "invalid_color": "Color no válido",
   "color_was_changed_to": "Se ha cambiado el color a {0}",
-  "nsfw_enabled": "NSFW habilitado",
-  "nsfw_disabled": "NSFW deshabilitado",
   "usage": "Uso",
   "role_menu": "Menú de roles",
   "select_the_roles_that_you_want": "Selecciona los roles que quieras",
@@ -293,10 +297,6 @@
   "role_id": "ID del rol",
   "welcome": "¡Bienvenid@!",
   "you_are_the_member_n": "Eres el miembro Nº{0}",
-  "welcome_to_guild": "¡Bienvenid@ a **{guild}**! {user}",
-  "goodbye_user": "Adiós, **{user}**. Esperamos volver a verte pronto.",
-  "user_was_banned": "**{user}** ha sido banead@ del servidor.",
-  "please_type_a_filter_id": "Por favor, escribe la ID de un filtro.",
   "filter_not_found": "Filtro no encontrado. Por favor, asegúrate  de que el filtro es público.",
   "help_time_out": "El tiempo para pasar las páginas se ha acabado.",
   "old_message": "Mensaje viejo",
@@ -313,6 +313,5 @@
   "module_property_not_found": "Propiedad del módulo no encontrada.",
   "levelup": "**¡Has subido de nivel!**\nAhora eres nivel **{level}**.",
   "leaderboard_title": "Tabla de clasificación",
-  "leaderboard_description": "",
   "level": "Nivel"
 }

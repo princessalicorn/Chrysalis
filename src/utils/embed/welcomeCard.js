@@ -4,13 +4,13 @@ const { fillTextWithTwemoji } = require('node-canvas-with-twemoji-and-discord-em
 
 module.exports = async (lang, bgURL, channel, user, message) => {
   // Create canvas
-	const canvas = Canvas.createCanvas(960,540);
-	const ctx = canvas.getContext('2d');
+	let canvas = Canvas.createCanvas(960,540);
+	let ctx = canvas.getContext('2d');
 
 	// Set background image (if any)
-	if (bgURL!=null && bgURL!='') {
+	if (bgURL) {
 		try {
-			const bg = await Canvas.loadImage(bgURL);
+			let bg = await Canvas.loadImage(bgURL);
 			ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
 		} catch (e) {/* Image URL is invalid */}
 	}
@@ -20,7 +20,7 @@ module.exports = async (lang, bgURL, channel, user, message) => {
 	ctx.font = '48px Montserrat Black';
 	ctx.textAlign = 'center';
 	ctx.fillStyle = 'white';
-	ctx.shadowColor = "rgba(0,0,0,1)";
+	ctx.shadowColor = 'rgba(0,0,0,1)';
 	ctx.shadowOffsetX = 2;
 	ctx.shadowOffsetY = 2;
 	ctx.shadowBlur = 10;
@@ -39,7 +39,7 @@ module.exports = async (lang, bgURL, channel, user, message) => {
 	ctx.stroke();
 	ctx.closePath();
 	ctx.clip();
-	const avatar = await user.displayAvatarURL({format: 'png'}) + "?size=1024";
+	let avatar = user.displayAvatarURL({format: 'png', size:1024});
 	try {
 		pfp = await Canvas.loadImage(avatar);
 		ctx.drawImage(pfp, canvas.width/2-radius, canvas.height/2-radius-80, radius*2, radius*2);
@@ -48,11 +48,11 @@ module.exports = async (lang, bgURL, channel, user, message) => {
 	}
 
 	// Send the image
-	const attachment = new MessageAttachment(canvas.toBuffer(), 'welcome.png');
+	let attachment = new MessageAttachment(canvas.toBuffer(), 'welcome.png');
   if (message == '...' || message == 'off' || message.trim() == '' || message == 'none' || message == 'null' || message == 'false') {
     channel.send({files: [attachment]});
   } else {
-    if (message == 'default') message = lang.welcome_to_guild;
+    if (message == 'default') message = lang.defaultValues.welcome.message;
     channel.send({content: message.replaceAll('{user}',user).replaceAll('{guild}',channel.guild.name), files: [attachment]});
   }
 }

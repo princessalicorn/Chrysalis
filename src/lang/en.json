@@ -198,6 +198,15 @@
       ["setxp {user} {xp}", "Sets the amount of XP that a user has."]
     ]
   },
+  "defaultValues": {
+    "welcome": {
+      "message": "Welcome to **{guild}**! {user}"
+    },
+    "goodbye": {
+      "message": "Goodbye, **{user}**. Hope we can see you again soon.",
+      "banMessage": "**{user}** was banned from the server."
+    }
+  },
   "wrong_channel": "The command you sent cannot be used in that channel.",
   "blocked_words": "Blocked words",
   "list": "List",
@@ -211,7 +220,7 @@
   "you_must_send_an_emoji": "You need to send an emoji.",
   "couldn_t_find_that_emoji": "Couldn't find that emoji.",
   "type_one_or_two_users": "Type one or two users.",
-  "self_love": "I know self love is important, but don't be a narcissist.",
+  "self_love": "I know self-love is important, but don't be a narcissist.",
   "lovemeter_messages": ["Sad.","Incompatible.","Very low... Just friends.","Probably just friends.","Very unlikely but there may be something.","There could be something, but I do not want to give illusions.","Very likely to be something. You can try.","Quite compatible. Could be a cute couple.","These two are making out for sure.","Could be a wonderful couple.","They are meant to be together forever."],
   "nsfw_only": "This command can only be used in NSFW channels.",
   "requested_by": "Requested by",
@@ -243,7 +252,6 @@
   "change_prefix_to": "Change the prefix to **{0}**?",
   "prefix_was_changed_to": "Prefix was changed to **{0}**",
   "valid_modules": "Valid modules",
-  "please_specify_a_user": "Please, specify a user.",
   "available_languages": "Available languages",
   "new_lang_message": "I'll speak in English now.",
   "boop_title": "{0} booped {1}!",
@@ -261,11 +269,9 @@
   "channels": "Channels",
   "server_boosts": "Server boosts",
   "image_source": "Image source",
-  "please_specify_one_or_more_channels": "Please, specify one or more channels.",
   "please_specify_a_new_value": "Please, specify a new value.",
   "value_must_be_true_or_false": "The value must be **true** or **false**.",
   "module_updated": "Module updated!",
-  "module_reset": "Module reset!",
   "attachments": "Attachments",
   "message_id": "Message ID",
   "module_enabled": "Module {0} enabled!",
@@ -274,8 +280,6 @@
   "change_color_to": "Change color to {0}?",
   "invalid_color": "Invalid color",
   "color_was_changed_to": "Color was changed to {0}",
-  "nsfw_enabled": "NSFW enabled!",
-  "nsfw_disabled": "NSFW disabled!",
   "usage": "Usage",
   "role_menu": "Role menu",
   "select_the_roles_that_you_want": "Select the roles that you want",
@@ -283,7 +287,7 @@
   "manage_roles_permission_required": "Chrysalis needs the `MANAGE_ROLES` permission to use this command.",
   "chrysalis_role_too_low": "Chrysalis' role is lower than the role you're requesting. Please, ask an admin to fix it.",
   "download_emoji": "Download emoji",
-  "please_type_a_valid_channel": "PCaucasianlease, type a valid channel.",
+  "please_type_a_valid_channel": "Please, type a valid channel.",
   "invalid_channel": "At least one of the channels you typed is invalid.",
   "invite_the_bot": "Invite the bot",
   "website": "Website",
@@ -293,10 +297,6 @@
   "role_id": "Role ID",
   "welcome": "Welcome!",
   "you_are_the_member_n": "You are the member Nº{0}",
-  "welcome_to_guild": "Welcome to **{guild}**! {user}",
-  "goodbye_user": "Goodbye, **{user}**. Hope we can see you again soon.",
-  "user_was_banned": "**{user}** was banned from the server.",
-  "please_type_a_filter_id": "Please, type a filter ID.",
   "filter_not_found": "Filter not found. Please, make sure that the filter is public.",
   "help_time_out": "Time to move between pages is over.",
   "old_message": "Old message",
@@ -313,6 +313,5 @@
   "module_property_not_found": "Module property not found.",
   "levelup": "**Level up!**\nYou're level **{level}** now!",
   "leaderboard_title": "Leaderboard",
-  "leaderboard_description": "",
   "level": "Level"
 }

@@ -198,6 +198,15 @@
       ["setxp {utente} {xp}", "Imposta la quantità di xp che un'utente ha."]
     ]
   },
+  "defaultValues": {
+    "welcome": {
+      "message": "Benvenuto a **{guild}**! {user}"
+    },
+    "goodbye": {
+      "message": "Arrivederci, **{user}**. Spero ci vediamo presto.",
+      "banMessage": "**{user}** è stato bannato dal server."
+    }
+  },
   "wrong_channel": "Il comando che hai inviato non può essere usato in questo canale",
   "blocked_words": "Parole bloccato",
   "list": "Lista",
@@ -243,7 +252,6 @@
   "change_prefix_to": "Cambia el prefisso con **{0}**?",
   "prefix_was_changed_to": "Prefisso stato cambiato con **{0}**",
   "valid_modules": "Moduli validi",
-  "please_specify_a_user": "Specifica un'utente per favore.",
   "available_languages": "Lingue disponibili",
   "new_lang_message": "Parlerò in italiano.",
   "boop_title": "{0} ha fatto un boop su {1}!",
@@ -261,11 +269,9 @@
   "channels": "Canali",
   "server_boosts": "Potenziamenti",
   "image_source": "Fonte dell'immagine ",
-  "please_specify_one_or_more_channels": "Specifica uno o più canali.",
   "please_specify_a_new_value": "Specifica un valore nuovo.",
   "value_must_be_true_or_false": "Il valore deve essere **vero** o **falso**.",
   "module_updated": "Il modulo è aggiornato!",
-  "module_reset": "Il modulo è azzerato!",
   "attachments": "Allegati",
   "message_id": "ID del messaggio",
   "module_enabled": "Modulo {0} sta abilitato!",
@@ -274,8 +280,6 @@
   "change_color_to": "Cambia il colore in {0}?",
   "invalid_color": "Colore non valido",
   "color_was_changed_to": "Il colore sta cambiato in {0}",
-  "nsfw_enabled": "NSFW è abilitato!",
-  "nsfw_disabled": "NSFW è disabilitato!",
   "usage": "Utilizzo",
   "role_menu": "Menu ruolo ",
   "select_the_roles_that_you_want": "Seleziona i ruoli che desideri",
@@ -293,10 +297,6 @@
   "role_id": "ID del ruolo",
   "welcome": "Benvenuto!",
   "you_are_the_member_n": "Sei membro Nº{0}",
-  "welcome_to_guild": "Benvenuto a **{guild}**! {user}",
-  "goodbye_user": "Arrivederci, **{user}**. Spero ci vediamo presto.",
-  "user_was_banned": "**{user}** è stato bannato dal server.",
-  "please_type_a_filter_id": "Por favore, digita un ID filtro.",
   "filter_not_found": "Impossibile trovare il filtro, controlla se il filtro è pubblico.",
   "help_time_out": "Il tempo per spostarsi tra le pagine è finito.",
   "old_message": "Messagio vecchio",
@@ -311,5 +311,7 @@
   "attach_files_permission_missing": "Chrysalis non ha permissi da inviare gli immagini in questo cannale.",
   "please_type_a_valid_positive_integer": "Por favore, invia un numero intero positivo.",
   "module_property_not_found": "Proprietà del modulo non trovata.",
-  "levelup": "**Sei salito di livello!**\nOra sei di livello **{level}**!"
+  "levelup": "**Sei salito di livello!**\nOra sei di livello **{level}**!",
+  "leaderboard_title": "Classifica",
+  "level": "Livello"
 }
