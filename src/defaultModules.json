@@ -115,7 +115,7 @@
       "banMessage": "default"
     },
     {
-      "name": "mlp",
+      "name": "torrent",
       "enabled": true,
       "restricted": false,
       "allowedChannels": []

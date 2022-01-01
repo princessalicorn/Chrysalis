@@ -158,7 +158,7 @@
       ]
     },
     {
-      "name": "mlp",
+      "name": "torrent",
       "description": "¡Descarga episodios de MLP por torrent!"
     }
   ],
@@ -178,7 +178,7 @@
       "booru": ["booru {búsqueda (opcional)}", "Envía una imagen de Manebooru. Puedes escribir tags para buscar."],
       "clop": ["clop {búsqueda (opcional)}", "Envía una imagen clop de Manebooru. Puedes escribir tags para buscar. Solo se puede usar en canales NSFW.","NSFW"],
       "e621": ["e621 {búsqueda (opcional)}", "Envía una imagen de e621. Puedes escribir tags para buscar. Solo se puede usar en canales NSFW.","NSFW"],
-      "mlp": ["mlp", "¡Descarga episodios de MLP por torrent!"]
+      "torrent": ["torrent", "¡Descarga episodios de MLP por torrent!"]
     },
     "admin": [
       ["setprefix {prefijo}", "Establece el prefijo de los comandos del bot en este servidor."],

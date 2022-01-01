@@ -4,16 +4,13 @@ let Parser = require('rss-parser');
 let parser = new Parser();
 
 module.exports = {
-  name: 'mlp',
-  alias: ['episode','episodes','mylittlepony','torrent','torrents','fim','mlpfim','download'],
+  name: 'torrent',
+  alias: ['torrents','episode','episodes','mylittlepony','mlp','fim','mlpfim','download','movie','movies'],
   run: async (client, message, command, args, lang, guildInfo) => {
 
-    let season = [];
     try { // Just in case yayponies is down
-      feed = await parser.parseURL('https://yayponies.no/videos/rss/1it.rss');
-    } catch (e) {
-      return message.reply(lang.error_fetching_episodes);
-    }
+    let season = [];
+    let feed = await parser.parseURL('https://yayponies.no/videos/rss/1it.rss');
     feed.items.forEach(item => {
       let currentSeason = parseInt(item.title.slice(item.title.indexOf('0'),item.title.indexOf('0')+2));
       let currentEpisode = parseInt(item.title.slice(item.title.indexOf('x')+1,item.title.indexOf('x')+3));
@@ -83,6 +80,6 @@ module.exports = {
         } catch (e) {}
       }
     });
-
+  } catch (e) { return message.author ? message.reply({content:lang.error_fetching_episodes,failIfNotExists:false}) : message.editReply({content:lang.error_fetching_episodes}); }
   }
 }
