@@ -1,4 +1,4 @@
-const { Client, Intents, Collection, MessageEmbed, MessageButton, MessageActionRow, MessageAttachment } = require('discord.js');
+const { Client, Intents, Collection, MessageEmbed } = require('discord.js');
 const client = new Client({intents:[
 	Intents.FLAGS.GUILDS,
 	Intents.FLAGS.GUILD_MESSAGES,
@@ -55,10 +55,10 @@ client.on('messageCreate', async (message) => {
 
 });
 
-client.on('messageUpdate', (oldMessage, newMessage) => {
+client.on('messageUpdate', async (oldMessage, newMessage) => {
 	if (newMessage.guild) {
 		sendEditedMessage(oldMessage, newMessage);
-	  bannedWords(newMessage, null);
+	  bannedWords(newMessage, await getGuildInfo(newMessage.guild));
 	}
 });
 
@@ -134,7 +134,7 @@ client.on('interactionCreate', async (i) => {
 		if (i.guild.me.roles.highest.position < i.guild.roles.cache.get(roleID).position) {
 			let guildInfo = await getGuildInfo(i.guild);
 			let lang = require(`./lang/${guildInfo.lang}.json`);
-			return i.user.send(lang.chrysalis_role_too_low);
+			return i.user.send(lang.chrysalis_role_too_low).catch(r=>{});
 		}
 		if (!i.member.roles.cache.get(roleID)) i.member.roles.add(roleID);
 		else i.member.roles.remove(roleID);
@@ -180,13 +180,9 @@ async function runTextCommand(message, guildInfo) {
       let restricted = false;
       if (!cmd.admin) restricted = await isRestricted(cmd.name, message, guildInfo.modules);
 			else if (!message.member.permissions.has('ADMINISTRATOR')) return;
-      if (restricted) return message.author.send(lang.wrong_channel);
-			if (cmd.nsfw && !message.channel.nsfw) return message.author.send(lang.nsfw_only);
-			if (cmd.name!='clean') try {
-				await message.channel.sendTyping();
-			} catch (e) {
-				// Discord API is down
-			}
+      if (restricted) return message.author.send(lang.wrong_channel).catch(r=>{});
+			if (cmd.nsfw && !message.channel.nsfw) return message.author.send(lang.nsfw_only).catch(r=>{});
+			if (cmd.name!='clean') await message.channel.sendTyping().catch(r=>{});
 			cmd.run(client, message, command, args, lang, guildInfo);
     }
   }
@@ -233,33 +229,38 @@ async function registerCommands() {
 
 async function bannedWords(message, guildInfo) {
 
-  if (message.member.permissions.has('ADMINISTRATOR')) return;
+  if (message.member && message.member.permissions.has('ADMINISTRATOR')) return;
 	if (message.author.id == client.user.id) return;
   if (!message.channel.permissionsFor(client.user.id).has('MANAGE_MESSAGES')) return;
-	if (!guildInfo) guildInfo = await getGuildInfo(message.guild);
-	let lang = require(`./lang/${guildInfo.lang}.json`);
-
 	let bannedwords = guildInfo.modules.find((c) => c.name == 'bannedwords');
 	if (!bannedwords.enabled) return false;
+	let lang = require(`./lang/${guildInfo.lang}.json`);
+
 	for (word of bannedwords.words) {
 		if (message.content.toLowerCase().includes(word.toLowerCase())) {
-			message.author.send(lang.message_deleted_dm);
-			message.delete();
-			return true;
+			try {
+				await message.delete();
+				if (message.member) await message.author.send(lang.message_deleted_dm);
+			} catch (e) {} finally {
+				return true;
+			}
 		}
 		if (message.attachments.size>0) {
 			for (word of bannedwords.words) {
 				for (attachment of message.attachments) {
 					if (attachment[1].name.toLowerCase().includes(word.toLowerCase())) {
-						message.author.send(lang.message_deleted_dm);
-						message.delete();
-						return true;
+						try {
+							await message.delete();
+							if (message.member) await message.author.send(lang.message_deleted_dm);
+						} catch (e) {} finally {
+							return true;
+						}
 					}
 				}
 			}
 		}
 	}
-	return false;
+	return !message.member;
 }
 
 async function sendHelp(message, guildInfo) {
