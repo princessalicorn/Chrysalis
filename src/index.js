@@ -278,21 +278,21 @@ async function sendHelp(message, guildInfo) {
 }
 
 async function boostEmbed(newMember) {
-	let guildInfo = getGuildInfo(newMember.guild);
+	let guildInfo = await getGuildInfo(newMember.guild);
 	let lang = require(`./lang/${guildInfo.lang}.json`);
   let modules = guildInfo.modules;
-  let nitro = modules.find((c) => c.name == 'nitro');
-  if (nitro.enabled && nitro.channel!='') {
+  let boost = modules.find((c) => c.name == 'boost');
+  if (boost.enabled && boost.channel) {
 		let boosterRole = newMember.guild.roles.premiumSubscriberRole;
 		let embedColor = boosterRole?.color || '#db6de2'; // Pink
     let emoji = client.emojis.cache.find(emoji => emoji.name == 'NitroBoost');
-    boostembed = new MessageEmbed()
+    let embed = new MessageEmbed()
     	.setTitle(`${lang.boost_title}`)
     	.setDescription(`<a:${emoji.name}:${emoji.id}> ${lang.boost_description} <a:${emoji.name}:${emoji.id}>`)
     	.setThumbnail(newMember.user.displayAvatarURL())
     	.setColor(embedColor);
-    let channel = client.channels.cache.find(channel => channel.id == nitro.channel);
-		if (channel) channel.send({content:`${lang.boost_message.replace('{0}',newMember.user)}`,embeds:[boostembed]});
+    let channel = client.channels.cache.find(channel => channel.id == boost.channel);
+		if (channel) channel.send({content:`${lang.boost_message.replace('{0}',newMember.user)}`,embeds:[embed]});
   }
 }
 
