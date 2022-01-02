@@ -26,6 +26,7 @@ client.on('ready', async () => {
 	console.log(colors.bgWhite.black(`Bot started as ${client.user.tag}`));
 	await registerCommands();
 	refreshPresence();
+	setInterval(refreshPresence, 1800000); // Refresh presence every half an hour so it doesn't vanish
 	console.log(colors.bgWhite.black(`${client.user.username} is ready on ${client.guilds.cache.size} server${client.guilds.cache.size != 1 ? 's' : ''}!`));
 });
 
@@ -528,5 +529,4 @@ async function getGuildInfo(guild) {
 async function refreshPresence() {
 	let presence = require('./presence.json');
 	client.user.setPresence(presence);
-	setInterval(refreshPresence, 3600000);
 }
