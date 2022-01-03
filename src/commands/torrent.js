@@ -80,6 +80,6 @@ module.exports = {
         } catch (e) {}
       }
     });
-  } catch (e) { return message.author ? message.reply({content:lang.error_fetching_episodes,failIfNotExists:false}) : message.editReply({content:lang.error_fetching_episodes}); }
+  } catch (e) { return message.author ? message.reply({content:lang.error_fetching_episodes}) : message.editReply({content:lang.error_fetching_episodes}); }
   }
 }

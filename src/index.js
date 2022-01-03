@@ -1,14 +1,19 @@
 const { Client, Intents, Collection, MessageEmbed } = require('discord.js');
-const client = new Client({intents:[
-	Intents.FLAGS.GUILDS,
-	Intents.FLAGS.GUILD_MESSAGES,
-	Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-	Intents.FLAGS.GUILD_PRESENCES,
-	Intents.FLAGS.GUILD_MEMBERS,
-	Intents.FLAGS.GUILD_VOICE_STATES,
-	Intents.FLAGS.GUILD_BANS,
-	Intents.FLAGS.DIRECT_MESSAGES
-]});
+const presence = require('./presence.json');
+const client = new Client({
+	failIfNotExists: false,
+	presence: presence,
+	intents: [
+		Intents.FLAGS.GUILDS,
+		Intents.FLAGS.GUILD_MESSAGES,
+		Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+		Intents.FLAGS.GUILD_PRESENCES,
+		Intents.FLAGS.GUILD_MEMBERS,
+		Intents.FLAGS.GUILD_VOICE_STATES,
+		Intents.FLAGS.GUILD_BANS,
+		Intents.FLAGS.DIRECT_MESSAGES
+	]
+});
 const colors = require('colors');
 require('dotenv').config();
 const path = require('path');
@@ -21,12 +26,10 @@ const onCooldown = new Set();
 const onVoiceChat = new Set();
 const banned = new Set();
 
-// Fetch servers and set Rich Presence
 client.on('ready', async () => {
 	console.log(colors.bgWhite.black(`Bot started as ${client.user.tag}`));
 	await registerCommands();
-	refreshPresence();
-	setInterval(refreshPresence, 1800000); // Refresh presence every half an hour so it doesn't vanish
+	setInterval((() => { client.user.setPresence(presence); }), 1800000); // Refresh presence every half an hour so it doesn't vanish
 	console.log(colors.bgWhite.black(`${client.user.username} is ready on ${client.guilds.cache.size} server${client.guilds.cache.size != 1 ? 's' : ''}!`));
 });
 
@@ -37,8 +40,7 @@ client.on('guildCreate', (guild) => {
 
 client.on('messageCreate', async (message) => {
 
-	if (!message.guild) return; // Ignore if message is a DM
-	if (message.author.bot) return;
+	if (!message.guild || message.author.bot) return; // Ignore DMs and bots
 
 	let guildInfo = await getGuildInfo(message.guild);
 
@@ -111,6 +113,7 @@ client.on('guildBanAdd', async (ban) => {
 });
 
 client.on('voiceStateUpdate', (oldState, newState) => {
+	if (newState.member.user.bot) return;
 	if ((newState.channel?.id && !oldState.channel?.id) || (newState.channel?.guild?.id && oldState.channel?.guild?.id != newState.channel?.guild?.id)) {
 		// User joins a voice channel (not switch)
 		onVoiceChat.add(`${newState.member.user.id},${newState.guild.id};${new Date()}`);
@@ -524,9 +527,4 @@ async function getGuildInfo(guild) {
 	await guilds.updateOne({id: guild.id},{ $set: { modules: modules}});
 	db.close();
 	return guildo;
-}
-
-async function refreshPresence() {
-	let presence = require('./presence.json');
-	client.user.setPresence(presence);
 }
