@@ -4,7 +4,8 @@
   "description": "MLP-themed Discord bot",
   "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "start": "nodemon -x 'node src/index.js || (sleep 10; touch src/index.js)'"
   },
   "keywords": [],
   "author": "Luna & contributors",
