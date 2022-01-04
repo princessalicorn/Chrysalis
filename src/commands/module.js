@@ -46,7 +46,10 @@ async function switchModule(message, modulearg, enable, color, lang) {
   let guild = await guilds.findOne({id: message.guild.id});
   let modules = guild.modules;
   let desiredModule = modules.find((c) => c.name == modulearg);
-  if (desiredModule) desiredModule.enabled = enable;
+  if (desiredModule) {
+    if (modulearg==='boost') desiredModule.announce = enable;
+    else desiredModule.enabled = enable;
+  }
   else modules.push(defaultModules.find((c) => c.name == modulearg));
   await guilds.updateOne({id: message.guild.id},{ $set: { modules: modules}});
   db.close();
