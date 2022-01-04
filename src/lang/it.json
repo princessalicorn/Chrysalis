@@ -59,6 +59,22 @@
       "description": "Mostra gli utenti con più XP."
     },
     {
+      "name": "profile",
+      "description": "Edit your profile (on all servers).",
+      "options": [
+        {
+          "name": "color",
+          "type": "STRING",
+          "description": "The color for your profile."
+        },
+        {
+          "name": "background_image",
+          "type": "STRING",
+          "description": "The background image URL for your profile."
+        }
+      ]
+    },
+    {
       "name": "emoji",
       "description": "Invia l'emoji come un'immagine.",
       "options": [
@@ -170,6 +186,7 @@
       "serverinfo": ["serverinfo","Mostra informazioni sul server."],
       "rank": ["grado {utente (opzionale)}","Mostra il tuo livello attuale e il tuo XP."],
       "leaderboard": ["tabellone.","Mostra il tabellone di XP."],
+      "profile": ["profile {field} {new value}","Edit your profile (on all servers)."],
       "emoji": ["jumbo {emoji}", "Invia l'emoji come un'immagine."],
       "love": ["love {utente 1} {utente 2 (opzionale)}", "Verifica la compatibilità tra due utenti."],
       "boop": ["boop {utente}", "Boop un'utente."],
@@ -313,5 +330,9 @@
   "module_property_not_found": "Proprietà del modulo non trovata.",
   "levelup": "**Sei salito di livello!**\nOra sei di livello **{level}**!",
   "leaderboard_title": "Classifica",
-  "level": "Livello"
+  "level": "Livello",
+  "rank": "Rank",
+  "total_xp": "Total XP",
+  "profile_fields_title": "You can change the following:",
+  "profile_updated": "Profile updated!"
 }

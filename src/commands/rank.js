@@ -1,4 +1,5 @@
-const canvacord = require('canvacord');
+const connectToDatabase = require('../utils/connectToDatabase.js');
+const rankCard = require('../utils/embed/rankCard.js');
 const { MessageAttachment } = require('discord.js');
 
 module.exports = {
@@ -20,22 +21,25 @@ module.exports = {
       }
       let userLevel = Math.trunc((Math.sqrt(5)/5)*Math.sqrt(user.xp));
       let highscores = rank.users.sort((a, b) => (a.xp < b.xp) ? 1 : -1);
-      let rankCard = new canvacord.Rank()
-          .setAvatar(taggedUserObject.displayAvatarURL({format: 'png', size:1024}))
-          .setUsername(taggedUserObject.username)
-          .setDiscriminator(taggedUserObject.discriminator)
-          .setRank(highscores.indexOf(user)+1)
-          .setLevel(userLevel)
-          .setCurrentXP(user.xp)
-          .setRequiredXP((userLevel+1)*(userLevel+1)*5)
-          .setStatus('offline')
-          .setProgressBar('#FFFFFF', 'COLOR')
-      rankCard.build()
-          .then(data => {
-              let attachment = new MessageAttachment(data, 'rank.png');
-              if (message.author) message.channel.send({files: [attachment]});
-              else message.editReply({files: [attachment]});
-          });
+
+      let db = await connectToDatabase();
+      let users = db.db('chrysalis').collection('users');
+      let userPrefs = await users.findOne({id:user.id});
+      db.close();
+
+      await rankCard(
+        taggedUserObject,
+        userPrefs?.color || '#4f9068',
+        userPrefs?.bgURL,
+        highscores.indexOf(user)+1,
+        userLevel,
+        user.xp-(userLevel*userLevel*5),
+        ((userLevel+1)*(userLevel+1)*5)-(userLevel*userLevel*5),
+        user.xp,
+        message,
+        lang
+      );
+
     } catch (e) {
       if (message.author) message.reply(lang.couldn_t_find_that_user);
       else message.editReply(lang.couldn_t_find_that_user);

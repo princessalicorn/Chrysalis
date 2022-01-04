@@ -59,6 +59,22 @@
       "description": "Shows the users with the most XP."
     },
     {
+      "name": "profile",
+      "description": "Edit your profile (on all servers).",
+      "options": [
+        {
+          "name": "color",
+          "type": "STRING",
+          "description": "The color for your profile."
+        },
+        {
+          "name": "background_image",
+          "type": "STRING",
+          "description": "The background image URL for your profile."
+        }
+      ]
+    },
+    {
       "name": "emoji",
       "description": "Sends the emoji as an image.",
       "options": [
@@ -170,6 +186,7 @@
       "serverinfo": ["serverinfo","Shows info about the server."],
       "rank": ["rank {user (optional)}","Shows your current level and XP."],
       "leaderboard": ["leaderboard","Shows the XP leaderboard."],
+      "profile": ["profile {field} {new value}","Edit your profile (on all servers)."],
       "emoji": ["jumbo {emoji}", "Sends the emoji as an image."],
       "love": ["love {user 1} {user 2 (optional)}", "Checks the compatibility level between two users."],
       "boop": ["boop {user}", "Boops a user."],
@@ -313,5 +330,9 @@
   "module_property_not_found": "Module property not found.",
   "levelup": "**Level up!**\nYou're level **{level}** now!",
   "leaderboard_title": "Leaderboard",
-  "level": "Level"
+  "level": "Level",
+  "rank": "Rank",
+  "total_xp": "Total XP",
+  "profile_fields_title": "You can change the following:",
+  "profile_updated": "Profile updated!"
 }

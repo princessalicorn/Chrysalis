@@ -59,6 +59,22 @@
       "description": "Muestra los usuarios con más experiencia."
     },
     {
+      "name": "profile",
+      "description": "Edita tu perfil (en todos los servidores).",
+      "options": [
+        {
+          "name": "color",
+          "type": "STRING",
+          "description": "El color para tu perfil."
+        },
+        {
+          "name": "imagen_de_fondo",
+          "type": "STRING",
+          "description": "La URL de la imagen de fondo para tu perfil."
+        }
+      ]
+    },
+    {
       "name": "emoji",
       "description": "Envía el emoji como una imagen.",
       "options": [
@@ -170,6 +186,7 @@
       "serverinfo": ["serverinfo","Muestra información sobre el servidor."],
       "rank": ["rank {usuario (opcional)}","Muestra tu nivel y experiencia actual."],
       "leaderboard": ["leaderboard","Muestra los usuarios con más experiencia."],
+      "profile": ["profile {campo} {nuevo valor}","Edita tu perfil (en todos los servidores)."],
       "emoji": ["jumbo {emoji}", "Envía el emoji como una imagen."],
       "love": ["love {usuario 1} {usuario 2 (opcional)}", "Comprueba tu nivel de compatibilidad entre dos usuarios. Si solo escribes un usuario el otro serás tú."],
       "boop": ["boop {usuario}", "Hace boop a un usuario."],
@@ -313,5 +330,9 @@
   "module_property_not_found": "Propiedad del módulo no encontrada.",
   "levelup": "**¡Has subido de nivel!**\nAhora eres nivel **{level}**.",
   "leaderboard_title": "Tabla de clasificación",
-  "level": "Nivel"
+  "level": "Nivel",
+  "rank": "Rango",
+  "total_xp": "XP total",
+  "profile_fields_title": "Puedes cambiar lo siguiente:",
+  "profile_updated": "¡Perfil actualizado!"
 }

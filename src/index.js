@@ -208,7 +208,7 @@ async function runSlashCommand(i) {
 		if (restricted) return i.reply({content:lang.wrong_channel,ephemeral:true});
 		if (cmd.nsfw && !i.channel.nsfw) return i.reply({content:lang.nsfw_only,ephemeral:true});
 		else {
-			await i.deferReply();
+			await i.deferReply({ephemeral:cmd.ephemeral});
 			cmd.run(client, i, command, args, lang, guildInfo);
 		}
 	}
@@ -286,7 +286,7 @@ async function boostEmbed(newMember) {
 	let lang = require(`./lang/${guildInfo.lang}.json`);
   let modules = guildInfo.modules;
   let boost = modules.find((c) => c.name == 'boost');
-  if (boost.enabled && boost.channel) {
+  if (boost.announce && boost.channel) {
 		let boosterRole = newMember.guild.roles.premiumSubscriberRole;
 		let embedColor = boosterRole?.color || '#db6de2'; // Pink
     let emoji = client.emojis.cache.find(emoji => emoji.name == 'NitroBoost');

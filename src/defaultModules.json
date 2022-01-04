@@ -12,7 +12,7 @@
     },
     {
       "name": "boost",
-      "enabled": false,
+      "announce": false,
       "channel": ""
     },
     {
@@ -133,6 +133,12 @@
       "announceLevelUp": true,
       "announceLevelUpChannel": "",
       "users": []
+    },
+    {
+      "name": "profile",
+      "enabled": true,
+      "restricted": false,
+      "allowedChannels": []
     }
   ]
 }
