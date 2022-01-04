@@ -65,7 +65,7 @@
         {
           "name": "color",
           "type": "STRING",
-          "description": "The color for your profile."
+          "description": "The hex color for your profile."
         },
         {
           "name": "background_image",

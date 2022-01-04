@@ -27,10 +27,7 @@ module.exports = {
     }
 
     if (newColor) {
-      newColor = newColor.replaceAll('#','');
-      if (newColor.length == 3) newColor = newColor.repeat(2);
-      if (newColor.length>6) newColor = newColor.slice(0,6);
-      newColor = `#${newColor}`;
+      newColor = `#${newColor.replaceAll('#','').repeat(6).slice(0,6)}`;
       try {
         embed.setColor(newColor);
       } catch (e) {

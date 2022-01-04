@@ -65,7 +65,7 @@
         {
           "name": "color",
           "type": "STRING",
-          "description": "El color para tu perfil."
+          "description": "El color hexadecimal para tu perfil."
         },
         {
           "name": "imagen_de_fondo",
