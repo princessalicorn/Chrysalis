@@ -176,6 +176,18 @@
     {
       "name": "torrent",
       "description": "Torrent episodi MLP"
+    },
+    {
+      "name": "say",
+      "description": "Chrysalis says what you type.",
+      "options": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "description": "The text you want Chrysalis to say.",
+          "required": true
+        }
+      ]
     }
   ],
   "help": {
@@ -195,7 +207,8 @@
       "booru": ["booru {ricerca (opzionale)}", "Invia un'immagine SFW da Manebooru. Puoi usare termini di ricerca."],
       "clop": ["clop {ricerca (opzionale)}", "Invia un'immagine NSFW da Manebooru. Puoi usare termini di ricerca. Solo può essere usato in un canale NSFW.","NSFW"],
       "e621": ["e621 {ricerca (opzionale)}", "Invia un'immagine da e621. Puoi usare termini di ricerca. Solo può essere usato in un canale NSFW.","NSFW"],
-      "torrent": ["torrent", "Torrent episodi MLP."]
+      "torrent": ["torrent", "Torrent episodi MLP."],
+      "say": ["say {text}", "Chrysalis says what you type."]
     },
     "admin": [
       ["setprefix {prefisso}", "Imposta il prefisso del server."],

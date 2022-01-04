@@ -139,6 +139,12 @@
       "enabled": true,
       "restricted": false,
       "allowedChannels": []
+    },
+    {
+      "name": "say",
+      "enabled": true,
+      "restricted": false,
+      "allowedChannels": []
     }
   ]
 }

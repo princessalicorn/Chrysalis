@@ -176,6 +176,18 @@
     {
       "name": "torrent",
       "description": "¡Descarga episodios de MLP por torrent!"
+    },
+    {
+      "name": "say",
+      "description": "Chrysalis dice lo que escribas.",
+      "options": [
+        {
+          "name": "texto",
+          "type": "STRING",
+          "description": "Lo que quieres que Chrysalis diga.",
+          "required": true
+        }
+      ]
     }
   ],
   "help": {
@@ -195,7 +207,8 @@
       "booru": ["booru {búsqueda (opcional)}", "Envía una imagen de Manebooru. Puedes escribir tags para buscar."],
       "clop": ["clop {búsqueda (opcional)}", "Envía una imagen clop de Manebooru. Puedes escribir tags para buscar. Solo se puede usar en canales NSFW.","NSFW"],
       "e621": ["e621 {búsqueda (opcional)}", "Envía una imagen de e621. Puedes escribir tags para buscar. Solo se puede usar en canales NSFW.","NSFW"],
-      "torrent": ["torrent", "¡Descarga episodios de MLP por torrent!"]
+      "torrent": ["torrent", "¡Descarga episodios de MLP por torrent!"],
+      "say": ["say {texto}", "Chrysalis dice lo que escribas."]
     },
     "admin": [
       ["setprefix {prefijo}", "Establece el prefijo de los comandos del bot en este servidor."],
