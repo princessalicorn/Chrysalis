@@ -309,7 +309,7 @@ async function createGuild(guild, rsc) {
       id: guild.id,
 			lang: 'en',
       prefix: 'c!',
-      color: '#245128',
+      color: '#3e804c',
       modules: defaultModules
     });
 		console.log(`Created guild ${guild.name} with ID ${guild.id}`);
