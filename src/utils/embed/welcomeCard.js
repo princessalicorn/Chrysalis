@@ -17,17 +17,20 @@ module.exports = async (lang, bgURL, channel, user, message) => {
 
 	// Text
 	Canvas.registerFont('./src/fonts/Montserrat-Black.ttf',{ family: 'Montserrat', weight: 'Black' });
-	ctx.font = '48px Montserrat Black';
+	ctx.font = '96px Montserrat Black';
 	ctx.textAlign = 'center';
 	ctx.fillStyle = 'white';
 	ctx.shadowColor = 'rgba(0,0,0,1)';
 	ctx.shadowOffsetX = 2;
 	ctx.shadowOffsetY = 2;
 	ctx.shadowBlur = 10;
-	await fillTextWithTwemoji(ctx, `${user.username.length > 21 ? user.username.toUpperCase().substring(0,18)+'...' : user.username.toUpperCase()}#${user.discriminator}`, canvas.width/2, canvas.height/2+180);
-	ctx.font = '96px Montserrat Black';
+	// Welcome
 	ctx.fillText(lang.welcome.toUpperCase(), canvas.width/2, canvas.height/2+136);
+	ctx.font = '48px Montserrat Black';
+	// Username
+	await fillTextWithTwemoji(ctx, `${user.username.length > 21 ? user.username.toUpperCase().substring(0,18)+'...' : user.username.toUpperCase()}#${user.discriminator}`, canvas.width/2, canvas.height/2+182);
 	ctx.font = '36px Montserrat Black';
+	// Member count
 	ctx.fillText(lang.you_are_the_member_n.toUpperCase().replace('{0}',channel.guild.memberCount), canvas.width/2, canvas.height/2+220);
 
 	// Profile picture
@@ -39,6 +42,9 @@ module.exports = async (lang, bgURL, channel, user, message) => {
 	ctx.stroke();
 	ctx.closePath();
 	ctx.clip();
+	ctx.shadowOffsetX = 0;
+	ctx.shadowOffsetY = 0;
+	ctx.shadowBlur = 0;
 	let avatar = user.displayAvatarURL({format: 'png', size:1024});
 	try {
 		pfp = await Canvas.loadImage(avatar);
