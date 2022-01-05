@@ -55,22 +55,22 @@
       ]
     },
     {
-      "name": "leaderboard",
+      "name": "tabellone",
       "description": "Mostra gli utenti con più XP."
     },
     {
-      "name": "profile",
-      "description": "Edit your profile (on all servers).",
+      "name": "profilo",
+      "description": "Modifica il tuo profilo (in ogni server).",
       "options": [
         {
-          "name": "color",
+          "name": "colore",
           "type": "STRING",
-          "description": "The hex color for your profile."
+          "description": "Il profilo hex per il tuo profilo."
         },
         {
-          "name": "background_image",
+          "name": "immagine_di_sfondo",
           "type": "STRING",
-          "description": "The background image URL for your profile."
+          "description": "URL per l'immagine di sfondo ."
         }
       ]
     },
@@ -179,12 +179,12 @@
     },
     {
       "name": "say",
-      "description": "Chrysalis says what you type.",
+      "description": "Chrysalis dice quello che scrivi.",
       "options": [
         {
-          "name": "text",
+          "name": "testo",
           "type": "STRING",
-          "description": "The text you want Chrysalis to say.",
+          "description": "Il testo vuoi Chyrsalis dire.",
           "required": true
         }
       ]
@@ -198,7 +198,7 @@
       "serverinfo": ["serverinfo","Mostra informazioni sul server."],
       "rank": ["grado {utente (opzionale)}","Mostra il tuo livello attuale e il tuo XP."],
       "leaderboard": ["tabellone.","Mostra il tabellone di XP."],
-      "profile": ["profile {field} {new value}","Edit your profile (on all servers)."],
+      "profile": ["profile {field} {valore nuovo}","Modifica il tuo profilo (en ogni server)."],
       "emoji": ["jumbo {emoji}", "Invia l'emoji come un'immagine."],
       "love": ["love {utente 1} {utente 2 (opzionale)}", "Verifica la compatibilità tra due utenti."],
       "boop": ["boop {utente}", "Boop un'utente."],
@@ -208,7 +208,7 @@
       "clop": ["clop {ricerca (opzionale)}", "Invia un'immagine NSFW da Manebooru. Puoi usare termini di ricerca. Solo può essere usato in un canale NSFW.","NSFW"],
       "e621": ["e621 {ricerca (opzionale)}", "Invia un'immagine da e621. Puoi usare termini di ricerca. Solo può essere usato in un canale NSFW.","NSFW"],
       "torrent": ["torrent", "Torrent episodi MLP."],
-      "say": ["say {text}", "Chrysalis says what you type."]
+      "say": ["say {testo}", "Chrysalis dice quello che scrivi."]
     },
     "admin": [
       ["setprefix {prefisso}", "Imposta il prefisso del server."],
@@ -344,8 +344,8 @@
   "levelup": "**Sei salito di livello!**\nOra sei di livello **{level}**!",
   "leaderboard_title": "Classifica",
   "level": "Livello",
-  "rank": "Rank",
-  "total_xp": "Total XP",
-  "profile_fields_title": "You can change the following:",
-  "profile_updated": "Profile updated!"
+  "rank": "Rango",
+  "total_xp": "XP Totale",
+  "profile_fields_title": "Puoi modificare queste impostazioni:",
+  "profile_updated": "Profilo Aggiornato!"
 }
