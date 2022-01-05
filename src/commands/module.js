@@ -1,5 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
+const Canvas = require('canvas');
 const reloadSlashCommands = require('../utils/reloadSlashCommands.js');
 const connectToDatabase = require('../utils/connectToDatabase.js');
 const defaultModules = require('../defaultModules.json').modules;
@@ -137,6 +138,14 @@ async function checkAction(message, requestedModule, targetKey, guildInfo, args,
         args.shift();
         args.shift();
         moduleObj[key] = args.join(' ');
+      }
+      if (key == 'background') {
+        try {
+          await Canvas.loadImage(args[2]);
+          moduleObj[key] = args[2];
+        } catch (e) {
+          return message.reply(lang.unsupported_image_type);
+        }
       }
     }
   }

@@ -347,5 +347,6 @@
   "rank": "Rank",
   "total_xp": "Total XP",
   "profile_fields_title": "You can change the following:",
-  "profile_updated": "Profile updated!"
+  "profile_updated": "Profile updated!",
+  "unsupported_image_type": "Unsupported image type."
 }

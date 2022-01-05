@@ -1,5 +1,6 @@
 const connectToDatabase = require('../utils/connectToDatabase.js');
 const { MessageEmbed } = require('discord.js');
+const Canvas = require('canvas');
 const fields = ['color','bgURL'];
 
 module.exports = {
@@ -32,6 +33,14 @@ module.exports = {
         embed.setColor(newColor);
       } catch (e) {
         return message.author ? message.reply({content:lang.invalid_color}) : message.editReply({content:lang.invalid_color});
+      }
+    }
+
+    if (newBG) {
+      try {
+        await Canvas.loadImage(newBG);
+      } catch (e) {
+        return message.author ? message.reply({content:lang.unsupported_image_type}) : message.editReply({content:lang.unsupported_image_type});
       }
     }
 

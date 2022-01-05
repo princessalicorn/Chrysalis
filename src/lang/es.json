@@ -347,5 +347,6 @@
   "rank": "Rango",
   "total_xp": "XP total",
   "profile_fields_title": "Puedes cambiar lo siguiente:",
-  "profile_updated": "¡Perfil actualizado!"
+  "profile_updated": "¡Perfil actualizado!",
+  "unsupported_image_type": "Tipo de imagen no soportado."
 }

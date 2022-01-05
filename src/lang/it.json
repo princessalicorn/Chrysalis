@@ -198,7 +198,7 @@
       "serverinfo": ["serverinfo","Mostra informazioni sul server."],
       "rank": ["grado {utente (opzionale)}","Mostra il tuo livello attuale e il tuo XP."],
       "leaderboard": ["tabellone.","Mostra il tabellone di XP."],
-      "profile": ["profile {field} {valore nuovo}","Modifica il tuo profilo (en ogni server)."],
+      "profile": ["profile {campo} {valore nuovo}","Modifica il tuo profilo (en ogni server)."],
       "emoji": ["jumbo {emoji}", "Invia l'emoji come un'immagine."],
       "love": ["love {utente 1} {utente 2 (opzionale)}", "Verifica la compatibilità tra due utenti."],
       "boop": ["boop {utente}", "Boop un'utente."],
@@ -221,7 +221,7 @@
       ["listwords", "Mosta le parole bloccato in questo server."],
       ["clean {numero di messaggi}", "Elimina i messaggi in blocco. Messaggi più vecchie di due semane non può essere eliminato."],
       ["enable {modulo}", "Abilita un modulo."],
-      ["disable {module}", "Disabilita un modulo."],
+      ["disable {modulo}", "Disabilita un modulo."],
       ["module {modulo}", "Modifica un modulo."],
       ["rolemenu {ruoloID} {ruoloID} {ruoloID}...", "Crea un rolemenu. Ogni argomenti è un'ID di un ruolo."],
       ["welcome {utene}", "Mostra un'anteprima della carta di benvenuto per l'utente menzionato."],
@@ -347,5 +347,6 @@
   "rank": "Rango",
   "total_xp": "XP Totale",
   "profile_fields_title": "Puoi modificare queste impostazioni:",
-  "profile_updated": "Profilo Aggiornato!"
+  "profile_updated": "Profilo Aggiornato!",
+  "unsupported_image_type": "Tipo di immagine non supportato."
 }
