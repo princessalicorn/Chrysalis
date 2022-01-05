@@ -23,7 +23,7 @@ module.exports = {
     // If tagged user is Chrysalis, send profile picture artwork source
     const artwork = 'https://www.deviantart.com/mirroredsea/art/Chrysalis-718716441';
     if (taggedUser.id == client.user.id)
-    if (message.author) return message.channel.send(artowrk);
+    if (message.author) return message.channel.send(artwork);
     else return message.editReply(artwork);
 
     let avatarembed = new MessageEmbed()
