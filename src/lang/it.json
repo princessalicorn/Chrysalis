@@ -198,7 +198,7 @@
       "serverinfo": ["serverinfo","Mostra informazioni sul server."],
       "rank": ["grado {utente (opzionale)}","Mostra il tuo livello attuale e il tuo XP."],
       "leaderboard": ["tabellone.","Mostra il tabellone di XP."],
-      "profile": ["profilo {field} {valore nuovo}","Modifica il tuo profilo (en ogni server)."],
+      "profile": ["profile {field} {valore nuovo}","Modifica il tuo profilo (en ogni server)."],
       "emoji": ["jumbo {emoji}", "Invia l'emoji come un'immagine."],
       "love": ["love {utente 1} {utente 2 (opzionale)}", "Verifica la compatibilità tra due utenti."],
       "boop": ["boop {utente}", "Boop un'utente."],
@@ -208,7 +208,7 @@
       "clop": ["clop {ricerca (opzionale)}", "Invia un'immagine NSFW da Manebooru. Puoi usare termini di ricerca. Solo può essere usato in un canale NSFW.","NSFW"],
       "e621": ["e621 {ricerca (opzionale)}", "Invia un'immagine da e621. Puoi usare termini di ricerca. Solo può essere usato in un canale NSFW.","NSFW"],
       "torrent": ["torrent", "Torrent episodi MLP."],
-      "say": ["dire {testo}", "Chrysalis dice quello che scrivi."]
+      "say": ["say {testo}", "Chrysalis dice quello che scrivi."]
     },
     "admin": [
       ["setprefix {prefisso}", "Imposta il prefisso del server."],
