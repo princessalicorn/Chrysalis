@@ -1,5 +1,5 @@
 const connectToDatabase = require('../utils/connectToDatabase.js');
-const rankCard = require('../utils/embed/rankCard.js');
+const rankCard = require('../utils/canvas/rankCard.js');
 const { MessageAttachment } = require('discord.js');
 
 module.exports = {

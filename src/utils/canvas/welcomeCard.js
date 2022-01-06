@@ -3,7 +3,7 @@ const Canvas = require('canvas');
 const { fillTextWithTwemoji } = require('node-canvas-with-twemoji-and-discord-emoji');
 
 module.exports = async (lang, bgURL, channel, user, message) => {
-  // Create canvas
+	// Create canvas
 	let canvas = Canvas.createCanvas(960,540);
 	let ctx = canvas.getContext('2d');
 
@@ -55,10 +55,10 @@ module.exports = async (lang, bgURL, channel, user, message) => {
 
 	// Send the image
 	let attachment = new MessageAttachment(canvas.toBuffer(), 'welcome.png');
-  if (message == '...' || message == 'off' || message.trim() == '' || message == 'none' || message == 'null' || message == 'false') {
-    channel.send({files: [attachment]});
-  } else {
-    if (message == 'default') message = lang.defaultValues.welcome.message;
-    channel.send({content: message.replaceAll('{user}',user).replaceAll('{guild}',channel.guild.name), files: [attachment]});
-  }
+	if (message == '...' || message == 'off' || message.trim() == '' || message == 'none' || message == 'null' || message == 'false') {
+		channel.send({files: [attachment]});
+	} else {
+		if (message == 'default') message = lang.defaultValues.welcome.message;
+		channel.send({content: message.replaceAll('{user}',user).replaceAll('{guild}',channel.guild.name), files: [attachment]});
+	}
 }
