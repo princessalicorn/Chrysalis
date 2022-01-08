@@ -147,11 +147,8 @@ client.on('interactionCreate', async (i) => {
 	// Delete inappropriate images
 	if (i.customId.startsWith('delete')) {
 		try {
-			// Delete message
-			i.message.delete();
-			// Delete command message
-			let rm = await i.channel.messages.fetch(i.customId.slice(i.customId.indexOf('-')+1));
-			if (rm) rm.delete();
+			i.message.delete(); // Delete message
+			await i.channel.messages.fetch(i.customId.slice(i.customId.indexOf('-')+1)).then(m => m.delete()); // Delete command message
 		} catch (e) {
 			// Excepted if message was created with a slash command
 		}
