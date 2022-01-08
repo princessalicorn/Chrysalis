@@ -69,7 +69,7 @@ module.exports = async (user, color, bgURL, rank, level, currentXP, requiredXP, 
   const lineHeight = 38;
   const lineWidth = 620;
   const r = lineHeight / 2; // Arc radius
-  let canvas2 = Canvas.createCanvas(934,282);
+  let canvas2 = Canvas.createCanvas(934,282); // Create another canvas so that the elements merge before applying the transparency
   let ctx2 = canvas2.getContext('2d');
   ctx2.fillStyle = '#151515';
   ctx2.arc(lineX + r, lineY + r, r, 1.5 * Math.PI, 0.5 * Math.PI, true);

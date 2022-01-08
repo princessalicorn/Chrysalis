@@ -31,11 +31,11 @@ module.exports = {
         taggedUserObject,
         userPrefs?.color || '#4f9068',
         userPrefs?.bgURL,
-        highscores.indexOf(user)+1,
-        userLevel,
-        user.xp-(userLevel*userLevel*5),
-        ((userLevel+1)*(userLevel+1)*5)-(userLevel*userLevel*5),
-        user.xp,
+        highscores.indexOf(user)+1, // rank
+        userLevel, // level
+        user.xp-(userLevel*userLevel*5), // currentXP
+        ((userLevel+1)*(userLevel+1)*5)-(userLevel*userLevel*5), // requiredXP
+        user.xp, // totalXP
         message,
         lang
       );
