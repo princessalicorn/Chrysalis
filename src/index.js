@@ -14,7 +14,6 @@ const client = new Client({
 		Intents.FLAGS.DIRECT_MESSAGES
 	]
 });
-const colors = require('colors');
 require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
@@ -27,10 +26,10 @@ const onVoiceChat = new Set();
 const banned = new Set();
 
 client.on('ready', async () => {
-	console.log(colors.bgWhite.black(`Bot started as ${client.user.tag}`));
+	console.log(`\u001b[47m\u001b[30mBot started as ${client.user.tag}\u001b[49m\u001b[39m`);
 	await registerCommands();
 	setInterval((() => { client.user.setPresence(presence); }), 1800000); // Refresh presence every half an hour so it doesn't vanish
-	console.log(colors.bgWhite.black(`${client.user.username} is ready on ${client.guilds.cache.size} server${client.guilds.cache.size != 1 ? 's' : ''}!`));
+	console.log(`\u001b[47m\u001b[30m${client.user.username} is ready on ${client.guilds.cache.size} server${client.guilds.cache.size != 1 ? 's' : ''}!\u001b[49m\u001b[39m`);
 });
 
 client.on('guildCreate', (guild) => {
