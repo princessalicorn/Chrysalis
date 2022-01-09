@@ -173,7 +173,7 @@ async function runTextCommand(message, guildInfo) {
 	let args = message.content.slice(guildInfo.prefix.length).split(/ +/);
 	let command = args.shift().toLowerCase();
 	const noxp = ['rank','leaderboard','lb','highscores','top','leaderboards','setxp'];
-	if (noxp.indexOf(command) == -1 && guildInfo.modules.find(m => m.name == 'rank').enabled) await addMessageXP(message);
+	if (noxp.indexOf(command) == -1 && guildInfo.modules.find(m => m.name == 'rank').enabled) await addMessageXP(message, guildInfo);
 
 	if (message.content.startsWith(guildInfo.prefix)) {
 		let cmd = client.commands.get(command) || client.commands.find((c) => c.alias.includes(command));
@@ -381,23 +381,23 @@ async function sendEditedMessage(oldMessage, newMessage) {
 	}
 }
 
-async function addMessageXP(message) {
+async function addMessageXP(message, guildInfo) {
 
 	if (onCooldown.has(`${message.author.id},${message.guild.id}`)) return;
+	let rank = guildInfo.modules.find((c) => c.name == 'rank');
+	if (!rank.enabled) return;
+	if (rank.xpBlacklistChannels.indexOf(message.channel.id) != -1) return;
+	if (rank.xpPerMessage <= 0) return;
+	let user = rank.users.find(u => u.id == message.author.id);
+	if (user?.xp >= Number.MAX_SAFE_INTEGER) return;
 
 	let db = await connectToDatabase();
 	let guilds = db.db('chrysalis').collection('guilds');
 	let guild = await guilds.findOne({id: message.guild.id});
 	let modules = guild.modules;
-	let rank = modules.find((c) => c.name == 'rank');
-	if (!rank.enabled) return db.close();
-	if (rank.xpBlacklistChannels.indexOf(message.channel.id) != -1) return db.close();
-	let user = rank.users.find(u => u.id == message.author.id);
-	if (!user) {
-		rank.users.push({id: message.author.id, xp: 0});
-		user = rank.users.find(u => u.id == message.author.id);
-	}
-	if (user.xp >= Number.MAX_SAFE_INTEGER) return db.close();
+	rank = modules.find((c) => c.name == 'rank');
+	user = rank.users.find(u => u.id == message.author.id);
+	if (!user) user = rank.users[rank.users.push({id: message.author.id, xp: 0})-1];
 
 	let currentLevel = Math.trunc((Math.sqrt(5)/5)*Math.sqrt(user.xp));
 
@@ -428,48 +428,44 @@ async function addMessageXP(message) {
 
 async function addVoiceXP(state) {
 
-	let db = await connectToDatabase();
-	let guilds = db.db('chrysalis').collection('guilds');
-	let guild = await guilds.findOne({id: state.guild.id});
-	let modules = guild.modules;
-	let rank = modules.find((c) => c.name == 'rank');
-	if (!rank.enabled) return db.close();
-	if (rank.xpBlacklistChannels.indexOf(state.channel.id) != -1) return db.close();
-	if (rank.voiceChatCooldown <= 0 || rank.xpInVoiceChat <= 0) return db.close();
+	let guildInfo = await getGuildInfo(state.guild); // Just to make sure guild exists
+	let rank = guildInfo.modules.find((c) => c.name == 'rank');
+	if (!rank.enabled) return;
+	if (rank.xpBlacklistChannels.indexOf(state.channel.id) != -1) return;
+	if (rank.voiceChatCooldown <= 0 || rank.xpInVoiceChat <= 0) return;
 	let user = rank.users.find(u => u.id == state.member.user.id);
-	if (!user) {
-		rank.users.push({id: state.member.user.id, xp: 0});
+	if (user?.xp >= Number.MAX_SAFE_INTEGER) return;
+
+	let ovc = Array.from(onVoiceChat).find(e=>e.startsWith(`${state.member.user.id},${state.guild.id};`));
+	if (onVoiceChat.delete(ovc)) {
+		let db = await connectToDatabase();
+		let guilds = db.db('chrysalis').collection('guilds');
+		let guild = await guilds.findOne({id: state.guild.id});
+		let modules = guild.modules;
+		rank = modules.find((c) => c.name == 'rank');
 		user = rank.users.find(u => u.id == state.member.user.id);
-	}
-	if (user.xp >= Number.MAX_SAFE_INTEGER) return db.close();
+		if (!user) user = rank.users[rank.users.push({id: state.member.user.id, xp: 0})-1];
+		let currentLevel = Math.trunc((Math.sqrt(5)/5)*Math.sqrt(user.xp));
 
-	let currentLevel = Math.trunc((Math.sqrt(5)/5)*Math.sqrt(user.xp));
+		let timestamp = new Date(ovc.slice(ovc.indexOf(';')+1));
+		let secondsInVoiceChat = Math.trunc(Math.abs(new Date() - timestamp)/1000);
+		if (secondsInVoiceChat >= rank.voiceChatCooldown) user.xp+=Math.trunc(secondsInVoiceChat/rank.voiceChatCooldown)*rank.xpInVoiceChat;
+		let newLevel = Math.trunc((Math.sqrt(5)/5)*Math.sqrt(user.xp));
 
-	for (val of onVoiceChat) {
-		if (val.startsWith(`${state.member.user.id},${state.guild.id};`)) {
-			onVoiceChat.delete(val)
-			let timestamp = new Date(val.substring(val.indexOf(';')+1,val.length));
-			let secondsInVoiceChat = Math.trunc(Math.abs(new Date() - timestamp)/1000);
-
-			if (secondsInVoiceChat >= rank.voiceChatCooldown) user.xp+=Math.trunc(secondsInVoiceChat/rank.voiceChatCooldown)*rank.xpInVoiceChat;
-
-			let newLevel = Math.trunc((Math.sqrt(5)/5)*Math.sqrt(user.xp));
-
-			if (!isNaN(parseInt(user.xp))) {
-				await guilds.updateOne({id: state.guild.id},{ $set: { modules: modules}});
-				if ((currentLevel < newLevel) && rank.announceLevelUp)
-				announceLevelUp(
-					client,
-					state.member.user,
-					newLevel,
-					rank.announceLevelUpChannel,
-					guild.color,
-					require(`./lang/${guild.lang}.json`)
-				);
-			}
+		if (!isNaN(parseInt(user.xp))) {
+			await guilds.updateOne({id: state.guild.id},{ $set: { modules: modules}});
+			if ((currentLevel < newLevel) && rank.announceLevelUp)
+			announceLevelUp(
+				client,
+				state.member.user,
+				newLevel,
+				rank.announceLevelUpChannel,
+				guild.color,
+				require(`./lang/${guild.lang}.json`)
+			);
 		}
+		db.close();
 	}
-	db.close();
 }
 
 async function getGuildInfo(guild) {
