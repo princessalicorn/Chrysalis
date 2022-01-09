@@ -1,14 +1,14 @@
-![](https://chrysalis.programmerpony.com/images/preview.png)
+[![](https://chrysalis.programmerpony.com/images/preview.png)](https://chrysalis.programmerpony.com/)
 
 # What's Chrysalis?
-Chrysalis is a general purpose, completely free and open source, MLP-themed Discord bot. I made this bot because I'm sick of proprietary bots that charge you for half of their features.
+Chrysalis is a general purpose, completely free and open source, MLP-themed Discord bot. I made this bot because I'm sick of proprietary bots that charge you for half of their features, and you probably are too. [Try Chrysalis today!](https://discord.com/api/oauth2/authorize?client_id=797161820594634762&permissions=8&scope=bot%20applications.commands)
 
 # How to contribute
 Any contribution is welcome! From adding GIFs to adding languages. You can also improve the code or even add new commands if you want. With your help, we can make Chrysalis the only bot you'll ever need. [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/programmer-pony/Chrysalis)
 
 # How to build
 
-###### Chrysalis is made with discord.js v13, so you will need Node.js 16.6 or higher to run it.
+###### Chrysalis is made with discord.js v13.5, so you will need Node.js 16.9 or higher to run it.
 
 1. Fork the repository.
 2. Run `npm i` to install the dependencies.
