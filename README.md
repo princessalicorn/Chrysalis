@@ -1,5 +1,8 @@
 [![](https://chrysalis.programmerpony.com/images/preview.png)](https://chrysalis.programmerpony.com/)
 
+[![CodeFactor](https://www.codefactor.io/repository/github/programmer-pony/chrysalis/badge)](https://www.codefactor.io/repository/github/programmer-pony/chrysalis)
+[![Discord Bots](https://top.gg/api/widget/status/797161820594634762.svg?noavatar=true)](https://discord.gg/Vj2jYQKaJP)
+
 # What's Chrysalis?
 Chrysalis is a general purpose, completely free and open source, MLP-themed Discord bot. I made this bot because I'm sick of proprietary bots that charge you for half of their features, and you probably are too. [Try Chrysalis today!](https://discord.com/api/oauth2/authorize?client_id=797161820594634762&permissions=8&scope=bot%20applications.commands)
 
