@@ -26,10 +26,10 @@ const onVoiceChat = new Set();
 const banned = new Set();
 
 client.on('ready', async () => {
-	console.log(`\u001b[47m\u001b[30mBot started as ${client.user.tag}\u001b[49m\u001b[39m`);
+	console.log(highlight(`Bot started as ${client.user.tag}`));
 	await registerCommands();
 	setInterval((() => { client.user.setPresence(presence); }), 1800000); // Refresh presence every half an hour so it doesn't vanish
-	console.log(`\u001b[47m\u001b[30m${client.user.username} is ready on ${client.guilds.cache.size} server${client.guilds.cache.size != 1 ? 's' : ''}!\u001b[49m\u001b[39m`);
+	console.log(highlight(`${client.user.username} is ready on ${client.guilds.cache.size} server${client.guilds.cache.size != 1 ? 's' : ''}!`));
 });
 
 client.on('guildCreate', (guild) => {
@@ -503,3 +503,5 @@ async function getGuildInfo(guild) {
 	db.close();
 	return guildo;
 }
+
+function highlight(s) { return `\u001b[47m\u001b[30m${s}\u001b[49m\u001b[39m`; }
