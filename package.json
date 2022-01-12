@@ -1,14 +1,14 @@
 {
   "name": "Chrysalis",
-  "version": "1.0.0",
-  "description": "MLP-themed Discord bot",
+  "version": "0.1.0",
+  "description": "Free MLP-themed Discord bot",
   "main": "src/index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "nodemon -x 'node src/index.js || (sleep 10; touch src/index.js)'"
   },
   "keywords": [],
-  "author": "Luna & contributors",
+  "author": "programmerpony & contributors",
   "license": "AGPL-3.0",
   "dependencies": {
     "canvas": "^2.8.0",
