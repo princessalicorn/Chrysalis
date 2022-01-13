@@ -27,11 +27,11 @@ module.exports = {
 function getNumberEmoji(n) {
   switch (n) {
     case 1:
-    return ':one:'
+    return ':first_place:'
     case 2:
-    return ':two:'
+    return ':second_place:'
     case 3:
-    return ':three:'
+    return ':third_place:'
     case 4:
     return ':four:'
     case 5:
