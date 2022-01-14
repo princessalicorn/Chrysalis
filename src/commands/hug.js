@@ -31,7 +31,7 @@ module.exports = {
         gifs: ['https://cdn.discordapp.com/attachments/862296245922037800/874339818073632818/-_chrysalis.gif']
       },
       onEverypony: {
-        text: lang.boop_title.replace('{1}', 'everypony'),
+        text: lang.hug_title.replace('{1}', 'everypony'),
         gifs: ['https://cdn.discordapp.com/attachments/862296245922037800/876471497655468032/-_everypony.gif']
       }
     });
