@@ -14,7 +14,8 @@ module.exports = {
       'https://cdn.discordapp.com/attachments/862296245922037800/862297077941665812/1537606__safe_screencap_bonbon_daisy_flowerwishes_lily_lilyvalley_rarity_roseluck_sweetiedrops_itisn.gif',
       'https://cdn.discordapp.com/attachments/862296245922037800/862297091980001301/boop.gif.065a0274d6c444d7496d388adbe7e58a.gif',
       'https://cdn.discordapp.com/attachments/862296245922037800/862297095889092608/boop.gif',
-      'https://cdn.discordapp.com/attachments/862296245922037800/862297089329070080/uwuwuwu.gif'
+      'https://cdn.discordapp.com/attachments/862296245922037800/862297089329070080/uwuwuwu.gif',
+      'https://cdn.discordapp.com/attachments/862296245922037800/931735996675006524/donut.gif'
     ];
 
     actionEmbed(message, guildInfo.color, args, {
@@ -29,6 +30,6 @@ module.exports = {
         gifs: ['https://cdn.discordapp.com/attachments/862296245922037800/874339788264734720/-_chrysalis.gif']
       }
     });
-    
+
   }
 }
