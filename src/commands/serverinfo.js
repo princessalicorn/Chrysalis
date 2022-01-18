@@ -5,10 +5,11 @@ module.exports = {
   alias: ['server-info','server','si'],
   run: async (client, message, command, args, lang, guildInfo) => {
     let created = Math.trunc(message.guild.createdTimestamp / 1000);
+    let icon = message.guild.iconURL({size:1024});
     let embed = new MessageEmbed()
       .setColor(guildInfo.color)
-      .setAuthor({name: message.guild.name, iconURL: message.guild.iconURL()})
-      .setThumbnail(message.guild.iconURL())
+      .setAuthor({name: message.guild.name, iconURL: icon})
+      .setThumbnail(icon)
       .setDescription(`__**${lang.server_info}**__`)
       .addField(lang.server_owner,`${await message.guild.fetchOwner()}`,true)
       .addField(lang.server_id,message.guild.id,true)

@@ -10,7 +10,7 @@ module.exports = {
     let embed = new MessageEmbed()
       .setTitle(lang.leaderboard_title)
       .setColor(guildInfo.color)
-      .setThumbnail(message.guild.iconURL());
+      .setThumbnail(message.guild.iconURL({size:1024}));
     let description = '';
     let highscores = rank.users.sort((a, b) => (a.xp < b.xp) ? 1 : -1);
     for (i of highscores.slice(0,10).keys()) {
