@@ -144,13 +144,23 @@ client.on('interactionCreate', async (i) => {
 	}
 
 	// Delete inappropriate images
-	if (i.customId.startsWith('delete')) {
+	if (i.customId.startsWith('delete')) i.message.delete().catch(r=>{}); // Deprecated
+	if (i.customId.startsWith('report')) {
+		await i.deferReply({ephemeral:true});
+		let args = i.customId.split('-');
+		let reportURL = args[1];
+		let commandMessage = args[2];
+		let guildInfo = await getGuildInfo(i.guild);
+		let lang = require(`./lang/${guildInfo.lang}.json`);
+		let embed = new MessageEmbed()
+			.setTitle(lang.please_report)
+			.setURL(reportURL)
+			.setColor(guildInfo.color);
+		await i.editReply({embeds:[embed],ephemeral:true});
 		try {
-			i.message.delete(); // Delete message
-			await i.channel.messages.fetch(i.customId.slice(i.customId.indexOf('-')+1)).then(m => m.delete()); // Delete command message
-		} catch (e) {
-			// Excepted if message was created with a slash command
-		}
+			i.message.delete();
+			if (commandMessage) await i.channel.messages.fetch(commandMessage).then(m => m.delete());
+		} catch (e) {}
 	}
 });
 

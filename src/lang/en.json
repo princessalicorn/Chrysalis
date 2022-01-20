@@ -255,6 +255,7 @@
   "nsfw_only": "This command can only be used in NSFW channels.",
   "requested_by": "Requested by",
   "how_to_delete": "Click here if this image is inappropriate.",
+  "please_report": "Please report this image so it doesn't show up again.",
   "role_info": "Role info:",
   "name": "Name",
   "color": "Color",

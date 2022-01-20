@@ -20,7 +20,7 @@ module.exports = {
         sourceURL = randomImage.sources[0];
         let row = new MessageActionRow().addComponents(new MessageButton({
           label: lang.how_to_delete,
-          customId: message.author ? `delete-${message.id}` : 'delete',
+          customId: `report-https://e621.net/tickets/new?disp_id=${imageID}&type=post${message.author ? `-${message.id}` : ''}`,
           style: 'DANGER'
         }));
         return message.author ? message.channel.send({content:`https://e621.net/posts/${imageID}`,components:[row]}) : message.editReply({content:`https://e621.net/posts/${imageID}`,components:[row]});

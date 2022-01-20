@@ -55,7 +55,7 @@
       ]
     },
     {
-      "name": "tabellone",
+      "name": "leaderboard",
       "description": "Mostra gli utenti con più XP."
     },
     {
@@ -255,6 +255,7 @@
   "nsfw_only": "Questo comando solo può essere usato in un canale NSFW.",
   "requested_by": "Richiesto di",
   "how_to_delete": "Clicca qui se questa immagine è inappropriate.",
+  "please_report": "Segnala questa immagine in modo che non appaia più.",
   "role_info": "Info del ruolo:",
   "name": "Nome",
   "color": "Colore",

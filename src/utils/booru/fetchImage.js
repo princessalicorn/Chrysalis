@@ -31,7 +31,7 @@ module.exports = async function fetchImage(client, query, message, color, number
       		.setDescription(`${lang.requested_by} ${message.member}`);
         let row = new MessageActionRow().addComponents(new MessageButton({
           label: lang.how_to_delete,
-          customId: message.author ? `delete-${message.id}` : 'delete',
+          customId: `report-https://manebooru.art/images/${imageID}/reports/new${message.author ? `-${message.id}` : ''}`,
           style: 'DANGER'
         }));
         if (message.author) await message.channel.send({embeds:[embed],components:[row]});
