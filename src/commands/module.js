@@ -60,7 +60,11 @@ async function switchModule(message, modulearg, enable, color, lang) {
 
 async function moduleInfo(message, requestedModule, guildInfo, lang) {
   let moduleObj = guildInfo.modules.find((c) => c.name == requestedModule);
-  let embed = new MessageEmbed().setTitle(requestedModule).setColor(guildInfo.color);
+  let embed = new MessageEmbed()
+    .setTitle(requestedModule)
+    .setURL(`https://chrysalis-docs.programmerpony.com${guildInfo.lang == 'es' ? '/es/' : '/'}modules/${requestedModule}.html`)
+    .setFooter({text:lang.check_documentation})
+    .setColor(guildInfo.color);
   for (key of Object.keys(moduleObj)) {
     if (key == 'name' || key == 'users') continue;
     switch (typeof moduleObj[key]) {

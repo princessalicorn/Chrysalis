@@ -349,5 +349,6 @@
   "total_xp": "XP Totale",
   "profile_fields_title": "Puoi modificare queste impostazioni:",
   "profile_updated": "Profilo Aggiornato!",
-  "unsupported_image_type": "Tipo di immagine non supportato."
+  "unsupported_image_type": "Tipo di immagine non supportato.",
+  "check_documentation": "Fare clic sul nome del modulo per aprire la documentazione per questo modulo."
 }

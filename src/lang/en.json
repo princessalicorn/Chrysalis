@@ -349,5 +349,6 @@
   "total_xp": "Total XP",
   "profile_fields_title": "You can change the following:",
   "profile_updated": "Profile updated!",
-  "unsupported_image_type": "Unsupported image type."
+  "unsupported_image_type": "Unsupported image type.",
+  "check_documentation": "Click on the module name to open the documentation for this module."
 }
