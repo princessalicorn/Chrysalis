@@ -13,10 +13,10 @@ module.exports = {
     /* Some tags are hidden by default but they will be
     shown anyways if you explicitly search for them.
     For more customization, use your own filter. */
-    const f = ['vore','inflation','fat fetish','fart fetish','fart','scat','diaper','gore','grimdark','semi-grimdark','grotesque'];
-    if (query!='') {
+    const f = ['vore','inflation','fat fetish','fart fetish','fart','scat','diaper','gore','grimdark','semi-grimdark','grotesque','suggestive','screencap'];
+    if (query) {
       if (filter == 200) for (i of f) if (!query.includes(i)) query += `,-${i}`;
-      query = `explicit,${query}&filter_id=${filter}&per_page=50`;
+      query = `${`${query},`.includes('suggestive,') ? 'suggestive' : '(questionable || explicit)'},${query}&filter_id=${filter}&per_page=50`;
     } else {
       query = `-${f.toString().replaceAll(',',',-')}&filter_id=${filter}&per_page=50`;
     }
