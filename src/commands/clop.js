@@ -13,12 +13,12 @@ module.exports = {
     /* Some tags are hidden by default but they will be
     shown anyways if you explicitly search for them.
     For more customization, use your own filter. */
-    const f = ['vore','inflation','fat fetish','fart fetish','fart','scat','diaper','gore','grimdark','semi-grimdark','grotesque','suggestive','screencap'];
+    const f = ['vore','inflation','fat fetish','fattening','force feeding','fart','fart fetish','scat','diaper','gore','grimdark','semi-grimdark','grotesque','suggestive','screencap'];
     if (query) {
       if (filter == 200) for (i of f) if (!query.includes(i)) query += `,-${i}`;
-      query = `${`${query},`.includes('suggestive,') ? 'suggestive' : '(questionable || explicit)'},${query}&filter_id=${filter}&per_page=50`;
+      query = `${`,${query}`.includes(',suggestive') ? 'suggestive' : '(questionable || explicit)'},${query}&filter_id=${filter}&per_page=50`;
     } else {
-      query = `-${f.toString().replaceAll(',',',-')}&filter_id=${filter}&per_page=50`;
+      query = `-${f.join(',-')}&filter_id=${filter}&per_page=50`;
     }
     fetchImage(client, query, message, guildInfo.color, 1, lang);
   }
