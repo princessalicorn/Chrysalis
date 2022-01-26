@@ -13,10 +13,10 @@ module.exports = {
     /* Some tags are hidden by default but they will be
     shown anyways if you explicitly search for them.
     For more customization, use your own filter. */
-    const f = ['vore','inflation','fat fetish','fattening','force feeding','fart','fart fetish','scat','diaper','gore','grimdark','semi-grimdark','grotesque','suggestive','screencap'];
+    const f = ['grimdark','semi-grimdark','grotesque','gore','vore','inflation','fat fetish','fattening','force feeding','fart','fart fetish','scat','diaper','screencap','hyper muscle','hyper lactation','hyper'];
     if (query) {
       if (filter == 200) for (i of f) if (!query.includes(i)) query += `,-${i}`;
-      query = `${`,${query}`.includes(',suggestive') ? 'suggestive' : '(questionable || explicit)'},${query}&filter_id=${filter}&per_page=50`;
+      query = `${query.includes('id:') || `,${query}`.includes(',suggestive') ? '(questionable || explicit || suggestive)' : '(questionable || explicit)'},${query}&filter_id=${filter}&per_page=50`;
     } else {
       query = `-${f.join(',-')}&filter_id=${filter}&per_page=50`;
     }
