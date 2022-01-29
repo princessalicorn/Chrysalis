@@ -187,11 +187,11 @@ async function runTextCommand(message, guildInfo) {
 	if (message.content.startsWith(guildInfo.prefix)) {
 		let cmd = client.commands.get(command) || client.commands.find((c) => c.alias.includes(command));
 		if (cmd) {
+			if (cmd.nsfw && !message.channel.nsfw) return message.author.send(lang.nsfw_only).catch(r=>{});
 			let restricted = false;
 			if (!cmd.admin) restricted = await isRestricted(cmd.name, message, guildInfo.modules);
 			else if (!message.member.permissions.has('ADMINISTRATOR')) return;
-			if (restricted) return message.author.send(lang.wrong_channel).catch(r=>{});
-			if (cmd.nsfw && !message.channel.nsfw) return message.author.send(lang.nsfw_only).catch(r=>{});
+			if (restricted) return message.author.send(lang.wrong_channel).catch(r=>{/*User blocked Chrysalis*/});
 			if (cmd.name!='clean') await message.channel.sendTyping().catch(r=>{});
 			cmd.run(client, message, command, args, lang, guildInfo);
     }
@@ -208,14 +208,16 @@ async function runSlashCommand(i) {
 	let args = i.options.data.map(d => d.value);
 	let cmd = client.commands.get(command) || client.commands.find((c) => c.alias.includes(command));
 	if (cmd) {
+		if (cmd.nsfw && !i.channel.nsfw) return i.reply({content:lang.nsfw_only,ephemeral:true});
 		let restricted = false;
 		if (!cmd.admin) restricted = await isRestricted(command, i, guildInfo.modules);
 		else if (!i.member.permissions.has('ADMINISTRATOR')) return;
-		if (restricted) return i.reply({content:lang.wrong_channel,ephemeral:true});
-		if (cmd.nsfw && !i.channel.nsfw) return i.reply({content:lang.nsfw_only,ephemeral:true});
+		if (restricted) return i.reply({content:lang.wrong_channel,ephemeral:true}).catch(r=>{});
 		else {
-			await i.deferReply({ephemeral:cmd.ephemeral});
-			cmd.run(client, i, command, args, lang, guildInfo);
+			try {
+				await i.deferReply({ephemeral:cmd.ephemeral});
+				cmd.run(client, i, command, args, lang, guildInfo);
+			} catch (e) {} // Unknown interaction
 		}
 	}
 }
