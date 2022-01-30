@@ -28,7 +28,7 @@ module.exports = {
 
     let avatarembed = new MessageEmbed()
     .setTitle(lang.avatar.replace('{0}', taggedUser.displayName || taggedUser.username))
-    .setImage(`${taggedUser.displayAvatarURL()}?size=1024`)
+    .setImage(taggedUser.displayAvatarURL({size:1024}))
     .setColor((taggedUser.displayHexColor && taggedUser.displayHexColor != '#000000') ? taggedUser.displayHexColor: guildInfo.color)
     if (message.author) return message.channel.send({embeds:[avatarembed]});
     else return message.editReply({embeds:[avatarembed]});

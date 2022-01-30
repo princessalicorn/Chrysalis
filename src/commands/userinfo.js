@@ -33,7 +33,7 @@ function showMemberInfo(client, command, message, member, color, lang) {
   let embed = new MessageEmbed()
     .setDescription(`__**${lang.user_info}**__`)
     .setColor(color)
-    .setThumbnail(member.user.displayAvatarURL()+'?size=1024')
+    .setThumbnail(member.user.displayAvatarURL({size:1024}))
     .addField(lang.name, member.user.tag)
     .addField(lang.user_id, member.id)
     .addField(lang.server_join_date, `<t:${joined}:F> (<t:${joined}:R>)`)
@@ -47,7 +47,7 @@ function showUserInfo(client, command, message, taggedUser, color, lang) {
   let embed = new MessageEmbed()
     .setDescription(`__**${lang.user_info}**__`)
     .setColor(color)
-    .setThumbnail(taggedUser.displayAvatarURL()+'?size=1024')
+    .setThumbnail(taggedUser.displayAvatarURL({size:1024}))
     .addField(lang.name, `${taggedUser.username}#${taggedUser.discriminator}`)
     .addField(lang.user_id, taggedUser.id)
     .addField(lang.account_creation_date, `<t:${created}:F> (<t:${created}:R>)`);
