@@ -1,5 +1,5 @@
 const { Client, Intents, Collection, MessageEmbed } = require('discord.js');
-const presence = require('./presence.json');
+const presence = require('./presence.js');
 const client = new Client({
 	failIfNotExists: false,
 	presence: presence,
@@ -20,7 +20,7 @@ const fs = require('fs');
 const reloadSlashCommands = require('./utils/reloadSlashCommands.js');
 const announceLevelUp = require('./utils/embed/announceLevelUp.js');
 const connectToDatabase = require('./utils/connectToDatabase.js');
-const defaultModules = require('./defaultModules.json').modules;
+const defaultModules = require('./defaultModules.js');
 const onCooldown = new Set();
 const onVoiceChat = new Set();
 const banned = new Set();
@@ -71,7 +71,7 @@ client.on('messageDelete', (message) => {
 
 client.on('guildMemberAdd', async (member) => {
 	let guildInfo = await getGuildInfo(member.guild);
-	let lang = require(`./lang/${guildInfo.lang}.json`);
+	let lang = require(`./lang/${guildInfo.lang}.js`);
 	let welcome = guildInfo.modules.find((c) => c.name == 'welcome');
 	if (!welcome.enabled) return;
 	let channel = client.channels.cache.find(channel => channel.id == welcome.channel);
@@ -87,7 +87,7 @@ client.on('guildMemberRemove', async (member) => {
 	let isBan = banned.has(member.user.id);
 	if (isBan) banned.delete(member.user.id);
 	let guildInfo = await getGuildInfo(member.guild);
-	let lang = require(`./lang/${guildInfo.lang}.json`);
+	let lang = require(`./lang/${guildInfo.lang}.js`);
 	let goodbye = guildInfo.modules.find((c) => c.name == 'goodbye');
 	if (!goodbye.enabled) return;
 	let channel = client.channels.cache.find(channel => channel.id == goodbye.channel);
@@ -136,7 +136,7 @@ client.on('interactionCreate', async (i) => {
 		await i.member.fetch(true);
 		if (i.guild.me.roles.highest.position < i.guild.roles.cache.get(roleID).position) {
 			let guildInfo = await getGuildInfo(i.guild);
-			let lang = require(`./lang/${guildInfo.lang}.json`);
+			let lang = require(`./lang/${guildInfo.lang}.js`);
 			return i.user.send(lang.chrysalis_role_too_low).catch(r=>{});
 		}
 		if (!i.member.roles.cache.get(roleID)) i.member.roles.add(roleID);
@@ -151,7 +151,7 @@ client.on('interactionCreate', async (i) => {
 		let reportURL = args[1];
 		let commandMessage = args[2];
 		let guildInfo = await getGuildInfo(i.guild);
-		let lang = require(`./lang/${guildInfo.lang}.json`);
+		let lang = require(`./lang/${guildInfo.lang}.js`);
 		let embed = new MessageEmbed()
 			.setTitle(lang.please_report)
 			.setURL(reportURL)
@@ -178,7 +178,7 @@ async function runTextCommand(message, guildInfo) {
 
 	if (!message.channel.permissionsFor(client.user.id).has('SEND_MESSAGES') || !message.channel.permissionsFor(client.user.id).has('VIEW_CHANNEL')) return;
 
-	let lang = require(`./lang/${guildInfo.lang}.json`);
+	let lang = require(`./lang/${guildInfo.lang}.js`);
 	let args = message.content.slice(guildInfo.prefix.length).split(/ +/);
 	let command = args.shift().toLowerCase();
 	const noxp = ['rank','leaderboard','lb','highscores','top','leaderboards','setxp'];
@@ -202,7 +202,7 @@ async function runSlashCommand(i) {
 
 	let guildInfo = await getGuildInfo(i.guild);
 	if (!i.channel.permissionsFor(client.user.id).has('SEND_MESSAGES') || !i.channel.permissionsFor(client.user.id).has('VIEW_CHANNEL')) return;
-	let lang = require(`./lang/${guildInfo.lang}.json`);
+	let lang = require(`./lang/${guildInfo.lang}.js`);
 
 	let command = i.commandName;
 	let args = i.options.data.map(d => d.value);
@@ -243,7 +243,7 @@ async function bannedWords(message, guildInfo) {
 	if (!message.channel.permissionsFor(client.user.id).has('MANAGE_MESSAGES')) return;
 	let bannedwords = guildInfo.modules.find((c) => c.name == 'bannedwords');
 	if (!bannedwords.enabled) return false;
-	let lang = require(`./lang/${guildInfo.lang}.json`);
+	let lang = require(`./lang/${guildInfo.lang}.js`);
 
 	for (word of bannedwords.words) {
 		if (message.content.toLowerCase().includes(word.toLowerCase())) {
@@ -274,7 +274,7 @@ async function bannedWords(message, guildInfo) {
 
 async function sendHelp(message, guildInfo) {
 	if (!message.channel.permissionsFor(client.user.id).has('SEND_MESSAGES') || !message.channel.permissionsFor(client.user.id).has('VIEW_CHANNEL')) return;
-	let lang = require(`./lang/${guildInfo.lang}.json`);
+	let lang = require(`./lang/${guildInfo.lang}.js`);
 	let embed = new MessageEmbed()
 		.setTitle(client.user.username)
 		.setThumbnail(client.user.displayAvatarURL())
@@ -288,7 +288,7 @@ async function sendHelp(message, guildInfo) {
 
 async function boostEmbed(newMember) {
 	let guildInfo = await getGuildInfo(newMember.guild);
-	let lang = require(`./lang/${guildInfo.lang}.json`);
+	let lang = require(`./lang/${guildInfo.lang}.js`);
 	let modules = guildInfo.modules;
 	let boost = modules.find((c) => c.name == 'boost');
 	if (boost.announce && boost.channel) {
@@ -335,7 +335,7 @@ async function checkSuggestion(message, modules) {
 async function sendDeletedMessage(message) {
 	let guildInfo = await getGuildInfo(message.guild);
 	let modules = guildInfo.modules;
-	let lang = require(`./lang/${guildInfo.lang}.json`);
+	let lang = require(`./lang/${guildInfo.lang}.js`);
 	let logs = modules.find((c) => c.name == 'logs');
 	if (logs.enabled && logs.channel != '') {
 		let embed = new MessageEmbed()
@@ -364,7 +364,7 @@ async function sendEditedMessage(oldMessage, newMessage) {
 	if (oldMessage.attachments.size == newMessage.attachments.size && oldMessage.content == newMessage.content) return;
 	if (newMessage.author.id == client.user.id) return;
 	let guildInfo = await getGuildInfo(newMessage.guild);
-	let lang = require(`./lang/${guildInfo.lang}.json`);
+	let lang = require(`./lang/${guildInfo.lang}.js`);
 	let modules = guildInfo.modules;
 	let logs = modules.find((c) => c.name == 'logs');
 	if (logs.enabled && logs.channel != '') {
@@ -425,7 +425,7 @@ async function addMessageXP(message, guildInfo) {
 			newLevel,
 			rank.announceLevelUpChannel,
 			guild.color,
-			require(`./lang/${guild.lang}.json`)
+			require(`./lang/${guild.lang}.js`)
 		);
 	}
 	db.close();
@@ -472,7 +472,7 @@ async function addVoiceXP(state) {
 				newLevel,
 				rank.announceLevelUpChannel,
 				guild.color,
-				require(`./lang/${guild.lang}.json`)
+				require(`./lang/${guild.lang}.js`)
 			);
 		}
 		db.close();

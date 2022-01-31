@@ -1,5 +1,5 @@
 module.exports = async (client, guild, guildInfo) => {
-  let lang = require(`../lang/${guildInfo.lang}.json`);
+  let lang = require(`../lang/${guildInfo.lang}.js`);
   let applicationCommands = [];
   for (command of client.commands) {
     if (command[0] == 'leaderboard') continue;

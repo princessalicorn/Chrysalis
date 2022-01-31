@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 const Canvas = require('canvas');
 const reloadSlashCommands = require('../utils/reloadSlashCommands.js');
 const connectToDatabase = require('../utils/connectToDatabase.js');
-const defaultModules = require('../defaultModules.json').modules;
+const defaultModules = require('../defaultModules.js');
 const validModules = defaultModules.map(m => m.name);
 
 module.exports = {
