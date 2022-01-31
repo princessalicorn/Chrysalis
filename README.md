@@ -11,7 +11,7 @@ Any contribution is welcome! From adding GIFs to adding languages. You can also 
 
 # How to build
 
-###### Chrysalis is made with discord.js v13.5, so you will need Node.js 16.9 or higher to run it.
+###### Chrysalis is made with discord.js v13.6, so you will need Node.js 16.9 or higher to run it.
 
 1. Fork the repository.
 2. Run `npm i` to install the dependencies.
